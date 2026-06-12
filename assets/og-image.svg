@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="RACS - prefix-cache management for IM agents">
+  <title>RACS - prefix-cache management for IM agents</title>
+  <desc>Open Graph card for @takk/racs v1.0.0. Built at Takk Innovate Studio.</desc>
+
+  <defs>
+    <!-- Warm light gradient mirroring the landing-page hero canvas -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#fafaf9"/>
+    </linearGradient>
+
+    <!-- Soft accent wash behind the headline (top-right corner) -->
+    <radialGradient id="warmth" cx="0.85" cy="0.15" r="0.55">
+      <stop offset="0" stop-color="#f4f3f2" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#fafaf9" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background canvas -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#warmth)"/>
+
+  <!-- Subtle horizontal divider just under the header (border-strong wash) -->
+  <line x1="80" y1="160" x2="1120" y2="160" stroke="#e7e5e4" stroke-width="1"/>
+
+  <!-- Subtle horizontal divider just above the pills row -->
+  <line x1="80" y1="500" x2="1120" y2="500" stroke="#e7e5e4" stroke-width="1"/>
+
+  <!-- ============================================================= -->
+  <!-- Header: Takk brand mark + studio name + version chip          -->
+  <!-- ============================================================= -->
+
+  <!-- Takk Innovate Studio logo (warm dark square + white outlined circle) -->
+  <g transform="translate(80, 80)">
+    <rect x="0" y="0" width="56" height="56" rx="12" fill="#000000"/>
+    <circle cx="28" cy="28" r="18" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Studio name + tagline next to logo -->
+  <text x="156" y="108" font-family="Inter, ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="16" font-weight="700" fill="#1c1917" letter-spacing="-0.01em">Takk Innovate Studio</text>
+  <text x="156" y="130" font-family="Inter, ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#78716c" letter-spacing="0.08em">DEVELOPER INFRASTRUCTURE</text>
+
+  <!-- Version chip on the right -->
+  <g transform="translate(960, 92)">
+    <rect x="0" y="0" width="160" height="32" rx="16" fill="#1c1917"/>
+    <text x="80" y="21" text-anchor="middle" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="500" fill="#fafaf9">@takk/racs</text>
+  </g>
+
+  <!-- ============================================================= -->
+  <!-- Headline (Newsreader display serif, matches landing h1)       -->
+  <!-- ============================================================= -->
+
+  <text x="80" y="270" font-family="Newsreader, Georgia, 'Times New Roman', serif" font-size="76" font-weight="400" fill="#1c1917" letter-spacing="-0.025em">Cache the prefix.</text>
+  <text x="80" y="346" font-family="Newsreader, Georgia, 'Times New Roman', serif" font-size="76" font-weight="400" fill="#1c1917" letter-spacing="-0.025em">Bank the difference.</text>
+
+  <!-- ============================================================= -->
+  <!-- Subhead (Inter sans, secondary text color)                    -->
+  <!-- ============================================================= -->
+
+  <text x="80" y="410" font-family="Inter, ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="22" font-weight="500" fill="#57534e">RACS: zero-dependency prefix-cache management for IM agents,</text>
+  <text x="80" y="442" font-family="Inter, ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="22" font-weight="500" fill="#57534e">stability linting, provider directives, drift detection, savings analytics.</text>
+
+  <!-- ============================================================= -->
+  <!-- Metrics row (mirrors hero-meta pills from index.html)         -->
+  <!-- ============================================================= -->
+
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="13" font-weight="600">
+    <!-- 187 tests passing -->
+    <g transform="translate(80, 540)">
+      <rect x="0" y="0" width="170" height="40" rx="20" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="85" y="26" text-anchor="middle" fill="#1c1917">187 tests passing</text>
+    </g>
+    <!-- 92% coverage -->
+    <g transform="translate(266, 540)">
+      <rect x="0" y="0" width="150" height="40" rx="20" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="75" y="26" text-anchor="middle" fill="#1c1917">92% coverage</text>
+    </g>
+    <!-- 0 runtime deps -->
+    <g transform="translate(432, 540)">
+      <rect x="0" y="0" width="160" height="40" rx="20" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="80" y="26" text-anchor="middle" fill="#1c1917">0 runtime deps</text>
+    </g>
+    <!-- Apache-2.0 -->
+    <g transform="translate(608, 540)">
+      <rect x="0" y="0" width="130" height="40" rx="20" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="65" y="26" text-anchor="middle" fill="#1c1917">Apache-2.0</text>
+    </g>
+    <!-- SLSA provenance -->
+    <g transform="translate(754, 540)">
+      <rect x="0" y="0" width="170" height="40" rx="20" fill="#ffffff" stroke="#d6d3d1" stroke-width="1"/>
+      <text x="85" y="26" text-anchor="middle" fill="#1c1917">SLSA provenance</text>
+    </g>
+  </g>
+
+  <!-- ============================================================= -->
+  <!-- Domain footer (bottom right)                                  -->
+  <!-- ============================================================= -->
+
+  <text x="1120" y="566" text-anchor="end" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" font-weight="500" fill="#78716c">racs.takk.ag</text>
+</svg>

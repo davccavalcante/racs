@@ -1,0 +1,95 @@
+name: "Feature request"
+description: "Propose a new public surface, behavior, or capability."
+title: "[feat] <one-line summary>"
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for proposing a feature. Substantive proposals (new public exports, new provider profiles, new lint codes, new directive kinds, new state backends, CLI flag additions) require maintainer discussion BEFORE implementation. Please file this issue first and wait for triage before opening a PR.
+
+        Read [SPEC.md](https://github.com/davccavalcante/racs/blob/main/SPEC.md) before submitting. Two hard constraints are non-negotiable: zero runtime dependencies, and no provider network calls anywhere in the package (the product invariant).
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: "Target surface"
+      description: "Which part of RACS should the feature live in?"
+      options:
+        - "core engine (plan / lint / record / stats / schedule / drift / invalidate)"
+        - "new provider profile (cite the provider's cache documentation)"
+        - "existing provider profile (number update with source and date)"
+        - "new lint code (name the production failure it catches)"
+        - "new state backend (SQLite, Postgres, etc.)"
+        - "otel entry (@takk/racs/otel)"
+        - "vercel entry (@takk/racs/vercel)"
+        - "integrations entry (new or existing bridge)"
+        - "web / edge entries"
+        - "CLI (analyze / simulate / inspect / serve / new subcommand)"
+        - "telemetry / new event kind"
+        - "types / public API"
+        - "docs / examples"
+        - "CI / tooling"
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: "Motivation"
+      description: "What problem does this feature solve? Who has the problem (library user, CLI user, sidecar integrator, maintainer)? Why is the current surface insufficient? For provider-profile proposals, link the provider documentation and state the retrieval date."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: "Proposed surface"
+      description: "What would the public API look like? Include type signatures, CLI flag names, directive shapes, lint severities, whatever is concrete enough to review."
+      render: typescript
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives considered"
+      description: "Other shapes you considered and rejected (and why). 'I did not think of any' is not acceptable for non-trivial features. Remember `options.profiles` and the custom provider already cover many per-provider needs without a release."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: semver
+    attributes:
+      label: "SemVer impact"
+      description: "Per SPEC.md section 11. ProviderId, LintCode, and TelemetryEvent are minor-extensible; consumers tolerate unknown members."
+      options:
+        - "Patch: bug fix, internal refactor, profile-number correction"
+        - "Minor: new optional export, new optional field, new union member, new event kind"
+        - "Major: breaking change (rename, remove, signature change, schema or meaning change)"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: invariants
+    attributes:
+      label: "Invariant check"
+      options:
+        - label: "This proposal adds no runtime dependency."
+          required: true
+        - label: "This proposal adds no network call inside the package (hosts make every provider call; RACS only plans and accounts)."
+          required: true
+        - label: "This proposal keeps prompt content out of snapshots, telemetry, and lint messages."
+          required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Pre-submission checklist"
+      options:
+        - label: "I read [SPEC.md](https://github.com/davccavalcante/racs/blob/main/SPEC.md), including the SemVer policy and the limits section."
+          required: true
+        - label: "I searched existing issues and PRs for duplicates and prior art."
+          required: true
+        - label: "I understand substantive features need maintainer discussion before a PR opens (per CONTRIBUTING section 4.3)."
+          required: true

@@ -1,0 +1,189 @@
+{
+  "name": "@takk/racs",
+  "version": "1.0.0",
+  "description": "RACS (Remote Agent Context Store): the Redis of agentic prefix caches. Universal, zero-runtime-dependency prefix-cache management for long-context agents: stability-aware prompt planning, deterministic cache keys, provider-faithful adapters (Anthropic cache_control breakpoints, OpenAI prompt_cache_key and retention, Gemini cachedContent lifecycle, Bedrock cachePoint, xAI, Groq, DeepSeek, Mistral, OpenRouter, Kimi, Ollama, LM Studio, and more via four adapter families), TTL-aware refresh scheduling, prefix-drift detection, cross-session persistence, and normalized hit-ratio and savings analytics. Built for Massive Intelligence (IM) agents and non-human entities (NHE). Packaged Vercel AI SDK middleware, OpenTelemetry GenAI ingestion, bridges for @takk/keymesh, @takk/modelchain, @takk/behavioralai, and @takk/noeticos. Works in Node, Edge runtimes, and the browser.",
+  "keywords": [
+    "prompt-caching",
+    "prefix-cache",
+    "kv-cache",
+    "cache-management",
+    "context-caching",
+    "llm",
+    "ai-agents",
+    "cost-optimization",
+    "token-savings",
+    "cache-analytics",
+    "anthropic",
+    "openai",
+    "gemini",
+    "bedrock",
+    "cache-control",
+    "ttl",
+    "vercel-ai-sdk",
+    "opentelemetry",
+    "hermes-agent",
+    "mcp",
+    "edge",
+    "cloudflare-workers",
+    "zero-dependency",
+    "typescript"
+  ],
+  "homepage": "https://github.com/davccavalcante/racs",
+  "bugs": {
+    "url": "https://github.com/davccavalcante/racs/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davccavalcante/racs.git"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "David C Cavalcante",
+    "email": "davcavalcante@proton.me",
+    "url": "https://takk.ag"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./otel": {
+      "import": {
+        "types": "./dist/otel/index.d.ts",
+        "default": "./dist/otel/index.js"
+      },
+      "require": {
+        "types": "./dist/otel/index.d.cts",
+        "default": "./dist/otel/index.cjs"
+      }
+    },
+    "./vercel": {
+      "import": {
+        "types": "./dist/vercel/index.d.ts",
+        "default": "./dist/vercel/index.js"
+      },
+      "require": {
+        "types": "./dist/vercel/index.d.cts",
+        "default": "./dist/vercel/index.cjs"
+      }
+    },
+    "./integrations": {
+      "import": {
+        "types": "./dist/integrations/index.d.ts",
+        "default": "./dist/integrations/index.js"
+      },
+      "require": {
+        "types": "./dist/integrations/index.d.cts",
+        "default": "./dist/integrations/index.cjs"
+      }
+    },
+    "./web": {
+      "import": {
+        "types": "./dist/web/index.d.ts",
+        "browser": "./dist/web/index.js",
+        "default": "./dist/web/index.js"
+      },
+      "require": {
+        "types": "./dist/web/index.d.cts",
+        "default": "./dist/web/index.cjs"
+      }
+    },
+    "./edge": {
+      "import": {
+        "types": "./dist/edge/index.d.ts",
+        "worker": "./dist/edge/index.js",
+        "default": "./dist/edge/index.js"
+      },
+      "require": {
+        "types": "./dist/edge/index.d.cts",
+        "default": "./dist/edge/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "racs": "./dist/cli/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "CHANGELOG.md",
+    "SECURITY.md"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist coverage .tsbuildinfo",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check src tests",
+    "lint:fix": "biome check --write src tests",
+    "format": "biome format --write src tests",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "publint": "publint",
+    "attw": "attw --pack --ignore-rules=no-resolution",
+    "size": "size-limit",
+    "smoke:dist": "node scripts/smoke-dist.mjs",
+    "prepack": "pnpm run build",
+    "verify": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run smoke:dist && pnpm run publint"
+  },
+  "peerDependencies": {
+    "@takk/behavioralai": ">=1.0.0",
+    "@takk/keymesh": ">=1.0.0",
+    "@takk/modelchain": ">=1.0.0",
+    "@takk/noeticos": ">=1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@takk/behavioralai": {
+      "optional": true
+    },
+    "@takk/keymesh": {
+      "optional": true
+    },
+    "@takk/modelchain": {
+      "optional": true
+    },
+    "@takk/noeticos": {
+      "optional": true
+    }
+  },
+  "packageManager": "pnpm@10.34.1",
+  "sideEffects": false,
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.3",
+    "@biomejs/biome": "^2.4.16",
+    "@size-limit/preset-small-lib": "^12.1.0",
+    "@takk/behavioralai": "^1.0.0",
+    "@takk/keymesh": "^1.0.0",
+    "@takk/modelchain": "^1.0.0",
+    "@takk/noeticos": "^1.0.0",
+    "@types/node": "^25.9.3",
+    "@vitest/coverage-v8": "^4.1.8",
+    "publint": "^0.3.21",
+    "size-limit": "^12.1.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

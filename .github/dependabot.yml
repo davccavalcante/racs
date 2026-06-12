@@ -1,0 +1,39 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: "Europe/Madrid"
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    groups:
+      types:
+        patterns: ["@types/*"]
+      build-tools:
+        patterns: ["tsup", "tsx", "typescript", "vitest", "@vitest/*"]
+      lint-tools:
+        patterns: ["@biomejs/*", "publint", "@arethetypeswrong/*", "size-limit", "@size-limit/*"]
+      takk-family:
+        patterns: ["@takk/*"]
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+    ignore:
+      # Hold major bumps for explicit review (the Creator decides peer-dep impact).
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: "Europe/Madrid"
+    open-pull-requests-limit: 3
+    groups:
+      ci-actions:
+        patterns: ["*"]

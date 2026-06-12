@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,follow">
+  <meta name="color-scheme" content="light dark">
+  <title>Page not found - RACS</title>
+  <meta name="description"
+    content="The page you requested does not exist on the RACS site. Jump back to the homepage, the npm package, the GitHub repository, or the documentation.">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <link rel="canonical" href="https://racs.takk.ag/404.html">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/phosphor-icons@1.4.2/src/css/icons.min.css">
+
+  <style>
+    :root {
+      --font-family-primary: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --font-family-display: "Newsreader", Georgia, serif;
+      --font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+      --font-size-xs: 12px;
+      --font-size-sm: 14px;
+      --font-size-md: 16px;
+      --font-size-lg: 18px;
+      --font-size-xl: 20px;
+
+      --color-text-primary: #1c1917;
+      --color-text-secondary: #57534e;
+      --color-text-tertiary: #78716c;
+      --color-text-inverse: #fafaf9;
+      --color-surface-base: #000000;
+      --color-surface-page: #ffffff;
+      --color-surface-card: #fafaf9;
+      --color-surface-muted: #f4f3f2;
+      --color-surface-strong: #1d1511;
+      --color-strong-hover: #382a20;
+      --color-border: #e7e5e4;
+      --color-border-strong: #d6d3d1;
+      --color-focus-ring: #1d1511;
+
+      --space-1: 8px;
+      --space-2: 10px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 64px;
+
+      --radius-xs: 8px;
+      --radius-sm: 12px;
+      --radius-md: 16px;
+
+      --motion-instant: 200ms;
+      --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+
+      --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.06);
+      --shadow-md: 0 6px 24px rgba(28, 25, 23, 0.08);
+    }
+
+    [data-theme="dark"] {
+      --color-text-primary: #fafaf9;
+      --color-text-secondary: #d6d3d1;
+      --color-text-tertiary: #a8a29e;
+      --color-text-inverse: #1c1917;
+      --color-surface-page: #000000;
+      --color-surface-card: #161412;
+      --color-surface-muted: #1c1917;
+      --color-surface-strong: #e7dcc9;
+      --color-strong-hover: #d8c9b2;
+      --color-border: #2a2724;
+      --color-border-strong: #3a3531;
+      --color-focus-ring: #d8c9b2;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --color-text-primary: #fafaf9;
+        --color-text-secondary: #d6d3d1;
+        --color-text-tertiary: #a8a29e;
+        --color-text-inverse: #1c1917;
+        --color-surface-page: #000000;
+        --color-surface-card: #161412;
+        --color-surface-muted: #1c1917;
+        --color-surface-strong: #e7dcc9;
+        --color-strong-hover: #d8c9b2;
+        --color-border: #2a2724;
+        --color-border-strong: #3a3531;
+        --color-focus-ring: #d8c9b2;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+        --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+    }
+
+    body {
+      background: var(--color-surface-page);
+      color: var(--color-text-primary);
+      font-family: var(--font-family-primary);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      display: flex;
+      flex-direction: column;
+      transition: background var(--motion-instant) var(--motion-ease),
+        color var(--motion-instant) var(--motion-ease);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+
+    a {
+      color: var(--color-text-primary);
+      text-decoration: none;
+      transition: color var(--motion-instant) var(--motion-ease);
+    }
+
+    a:hover {
+      color: var(--color-strong-hover);
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--color-focus-ring);
+      outline-offset: 2px;
+      border-radius: var(--radius-xs);
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      padding: var(--space-6) var(--space-5);
+    }
+
+    .card {
+      max-width: 36rem;
+      width: 100%;
+      text-align: center;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-weight: 700;
+      font-size: var(--font-size-md);
+      color: var(--color-text-primary);
+      letter-spacing: -0.015em;
+      margin-bottom: var(--space-5);
+    }
+
+    .brand .mark {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-xs);
+      background: var(--color-surface-strong);
+      color: var(--color-text-inverse);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-family-display);
+      font-size: var(--font-size-md);
+    }
+
+    .stamp {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-xs);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-text-tertiary);
+      padding: 4px 10px;
+      border: 1px solid var(--color-border-strong);
+      border-radius: 999px;
+      margin-bottom: var(--space-5);
+    }
+
+    .stamp i {
+      font-size: 12px;
+    }
+
+    h1 {
+      font-family: var(--font-family-display);
+      font-size: clamp(48px, 11vw, 80px);
+      font-weight: 400;
+      letter-spacing: -0.025em;
+      line-height: 1.02;
+      margin: 0 0 var(--space-3);
+      color: var(--color-text-primary);
+    }
+
+    h1 .key {
+      display: inline-block;
+      font-style: italic;
+      color: var(--color-strong-hover);
+    }
+
+    h2 {
+      font-family: var(--font-family-primary);
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 0 0 var(--space-3);
+      color: var(--color-text-primary);
+    }
+
+    p {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-md);
+      margin: 0 0 var(--space-5);
+      line-height: 1.6;
+    }
+
+    code {
+      font-family: var(--font-family-mono);
+      font-size: 0.88em;
+      background: var(--color-surface-muted);
+      border: 1px solid var(--color-border);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: var(--color-text-primary);
+    }
+
+    .exits {
+      display: grid;
+      gap: var(--space-2);
+      grid-template-columns: 1fr;
+      margin: var(--space-5) 0 var(--space-4);
+      text-align: left;
+    }
+
+    @media (min-width: 600px) {
+      .exits {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .exit {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-primary);
+      text-decoration: none;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--motion-instant) var(--motion-ease),
+        border-color var(--motion-instant) var(--motion-ease),
+        box-shadow var(--motion-instant) var(--motion-ease);
+      min-height: 64px;
+    }
+
+    .exit:hover {
+      border-color: var(--color-border-strong);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      color: var(--color-text-primary);
+    }
+
+    .exit .exit-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-xs);
+      background: var(--color-surface-muted);
+      color: var(--color-surface-strong);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+
+    .exit .exit-icon i {
+      font-size: 18px;
+    }
+
+    .exit .exit-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .exit strong {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+
+    .exit span {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-tertiary);
+      font-family: var(--font-family-mono);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .hint {
+      margin-top: var(--space-5);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-tertiary);
+    }
+
+    footer {
+      background: var(--color-surface-base);
+      color: var(--color-text-inverse);
+      text-align: center;
+      padding: var(--space-4) var(--space-4);
+      font-size: var(--font-size-xs);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    footer a {
+      color: #d6d3d1;
+      opacity: 0.85;
+      transition: opacity var(--motion-instant) var(--motion-ease);
+    }
+
+    footer a:hover {
+      opacity: 1;
+      color: var(--color-text-inverse);
+      text-decoration: none;
+    }
+
+    footer .by-takk {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #d6d3d1;
+      opacity: 0.85;
+    }
+
+    footer .by-takk img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--color-text-inverse);
+    }
+
+    footer .sep {
+      color: #57534e;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="card">
+      <a href="/" class="brand" aria-label="RACS home">
+        <span class="mark" aria-hidden="true">r</span>
+        <span>RACS</span>
+      </a>
+      <span class="stamp"><i class="ph-warning-octagon" aria-hidden="true"></i>404 - Not Found</span>
+      <h1>This prefix has <span class="key">drifted</span>.</h1>
+      <h2>The page you requested does not exist on the RACS site.</h2>
+      <p>
+        The URL changed, moved, or never resolved to a page, and unlike a cached prefix, this one is not coming back
+        warm. Every exit below is a real source of truth.
+      </p>
+
+      <nav class="exits" aria-label="Useful destinations">
+        <a class="exit" href="/">
+          <span class="exit-icon"><i class="ph-house" aria-hidden="true"></i></span>
+          <span class="exit-body">
+            <strong>Homepage</strong>
+            <span>racs.takk.ag</span>
+          </span>
+        </a>
+        <a class="exit" href="https://www.npmjs.com/package/@takk/racs" rel="noopener external">
+          <span class="exit-icon"><i class="ph-package" aria-hidden="true"></i></span>
+          <span class="exit-body">
+            <strong>npm package</strong>
+            <span>@takk/racs</span>
+          </span>
+        </a>
+        <a class="exit" href="https://github.com/davccavalcante/racs" rel="noopener external">
+          <span class="exit-icon"><i class="ph-github-logo" aria-hidden="true"></i></span>
+          <span class="exit-body">
+            <strong>Source on GitHub</strong>
+            <span>davccavalcante/racs</span>
+          </span>
+        </a>
+        <a class="exit" href="https://github.com/davccavalcante/racs/blob/main/README.md" rel="noopener external">
+          <span class="exit-icon"><i class="ph-book-open" aria-hidden="true"></i></span>
+          <span class="exit-body">
+            <strong>Documentation</strong>
+            <span>README, SPEC, examples</span>
+          </span>
+        </a>
+      </nav>
+
+      <p class="hint">
+        Looking to install? Run <code>pnpm add @takk/racs</code> (or the equivalent for npm, yarn, or bun).
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <span>Copyright 2026 David C Cavalcante</span>
+    <span class="sep">-</span>
+    <span>Apache License 2.0</span>
+    <span class="sep">-</span>
+    <a class="by-takk" href="https://takk.ag" rel="noopener external" aria-label="Built at Takk Innovate Studio">
+      <img src="assets/takk.png" width="20" height="20" alt="Takk Innovate Studio" loading="lazy" decoding="async">
+      <span>Built at Takk Innovate Studio</span>
+    </a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/phosphor-icons@1.4.2/src/index.min.js" defer></script>
+</body>
+
+</html>

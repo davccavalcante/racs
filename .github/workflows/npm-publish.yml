@@ -1,0 +1,301 @@
+name: npm-publish
+
+# --- Why this workflow exists -----------------------------------------
+#
+# This workflow is Step 2 of the two-step release flow. It publishes a
+# package to the NPMJS registry using a version that was previously
+# released to GitHub by Step 1 (`release.yml`). The Creator's binding
+# directive requires this separation: the GitHub Release must be created
+# and reviewed BEFORE any artifact reaches NPMJS, because npm publishes
+# are effectively irreversible after the 72-hour unpublish window closes.
+#
+# Two-step release flow:
+#
+#   Step 1 (`release.yml`):
+#     - Creator-triggered (workflow_dispatch).
+#     - Validates version + tag absence + CHANGELOG entry.
+#     - Lints + tests + builds + link-checks + packs (dry-run).
+#     - Creates git tag + GitHub Release with title prefix
+#       `[REVIEW REQUIRED: NOT YET ON NPMJS]`.
+#     - Does NOT touch NPMJS.
+#
+#   Step 2 (this workflow `npm-publish.yml`):
+#     - Creator-triggered (workflow_dispatch) after reviewing the
+#       GitHub Release from Step 1.
+#     - Validates the git tag + GitHub Release exist (Step 1 ran).
+#     - Validates the version matches `package.json`.
+#     - Validates monotonic version vs the npm registry (no
+#       backwards or duplicate publishes), dependency-free compare.
+#     - Builds + tests + packs (dry-run).
+#     - Publishes to npm with provenance attestation.
+#     - Updates the GitHub Release title prefix to
+#       `[PUBLISHED ON NPMJS]` so the two-step state is visible.
+#
+# Why this workflow performs the build + test again rather than reusing
+# Step 1's artifacts: the Creator may have committed additional changes
+# between Step 1 and Step 2 (e.g., a documentation fix to a CHANGELOG
+# entry after reviewing the release). Re-running the full build + test
+# ensures the artifact that reaches NPMJS exactly matches the current
+# state of the repository at the published commit.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Exact semver. Must match the GitHub Release tag created by release.yml"
+        required: true
+        type: string
+      dist_tag:
+        description: "npm dist-tag (leave blank to auto-route: prereleases like 1.0.0-rc.1 route to the rc channel; clean X.Y.Z routes to latest)"
+        required: false
+        type: string
+      confirm:
+        description: 'Type exactly: "I-AM-THE-CREATOR-AND-I-PUBLISH-TO-NPMJS"'
+        required: true
+        type: string
+
+permissions:
+  contents: write # required to update the GitHub Release title after publish
+  id-token: write # required for npm provenance OIDC attestation
+
+# Serialise across the entire workflow so two concurrent publish runs
+# (against the same version) cannot race on the shared npm registry.
+# cancel-in-progress: false because a half-published release is harder
+# to recover from than waiting.
+concurrency:
+  group: npm-publish-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  npm-publish:
+    name: npm publish @takk/racs@${{ inputs.version }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Reject if confirmation phrase is wrong
+        run: |
+          expected="I-AM-THE-CREATOR-AND-I-PUBLISH-TO-NPMJS"
+          if [ "${{ inputs.confirm }}" != "$expected" ]; then
+            echo "::error::Confirmation phrase mismatch. Re-run with confirm=\"$expected\"."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # full history to verify tag existence + read CHANGELOG
+
+      - name: Resolve dist-tag (auto-route prereleases when blank)
+        id: resolve
+        run: |
+          version="${{ inputs.version }}"
+          provided="${{ inputs.dist_tag }}"
+          if [ -n "$provided" ]; then
+            dist_tag="$provided"
+          elif [[ "$version" == *-* ]]; then
+            qualifier="${version#*-}"
+            dist_tag="${qualifier%%.*}"
+          else
+            dist_tag="latest"
+          fi
+          echo "dist_tag=$dist_tag" >> "$GITHUB_OUTPUT"
+          echo "Resolved dist-tag: $dist_tag"
+
+      - name: Validate git tag exists locally (Step 1 must have run)
+        run: |
+          tag="v${{ inputs.version }}"
+          if ! git rev-parse --verify "refs/tags/$tag" >/dev/null 2>&1; then
+            echo "::error::Git tag $tag does not exist locally."
+            echo "::error::Did you run Step 1 (release.yml) first to create the GitHub Release?"
+            echo "::error::  gh workflow run release.yml -f version=${{ inputs.version }} -f confirm=YES-CREATE-GITHUB-RELEASE"
+            exit 1
+          fi
+
+      - name: Validate git tag exists on origin
+        run: |
+          tag="v${{ inputs.version }}"
+          if ! git ls-remote --tags origin "refs/tags/$tag" | grep -q "$tag"; then
+            echo "::error::Git tag $tag does not exist on origin."
+            echo "::error::Step 1 (release.yml) is responsible for pushing this tag. Verify it ran successfully."
+            exit 1
+          fi
+
+      - name: Validate GitHub Release exists (Step 1 created it)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="v${{ inputs.version }}"
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            echo "::error::GitHub Release $tag does not exist."
+            echo "::error::Run Step 1 (release.yml) first to create the GitHub Release."
+            exit 1
+          fi
+          echo "GitHub Release $tag found, proceeding."
+
+      - name: Validate version matches package.json
+        run: |
+          declared=$(node -p "require('./package.json').version")
+          if [ "$declared" != "${{ inputs.version }}" ]; then
+            echo "::error::Input version ${{ inputs.version }} does not match package.json version $declared."
+            echo "::error::The package.json was likely updated between Step 1 and now. Re-run Step 1 with the new version or revert package.json."
+            exit 1
+          fi
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org/"
+          scope: "@takk"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate monotonic version against npm registry (dependency-free semver compare)
+        run: |
+          pkg_full="@takk/racs"
+          new_version="${{ inputs.version }}"
+          if ! npm view "$pkg_full" version >/dev/null 2>&1; then
+            echo "First-ever publish of $pkg_full, monotonicity check skipped."
+            exit 0
+          fi
+          npm view "$pkg_full" versions --json > /tmp/existing-versions.json
+          # Dependency-free semver compare: numeric core fields, then the
+          # prerelease rules of SemVer 2.0.0 section 11. No `semver` package,
+          # nothing imported, so the gate can never be supply-chained.
+          cat > /tmp/semver-check.mjs <<'EOF'
+          import { readFileSync } from 'node:fs';
+
+          const [, , versionsPath, fresh] = process.argv;
+          const parsed = JSON.parse(readFileSync(versionsPath, 'utf8'));
+          const existing = Array.isArray(parsed) ? parsed : [parsed];
+
+          const parse = (v) => {
+            const dash = v.indexOf('-');
+            const core = dash === -1 ? v : v.slice(0, dash);
+            const pre = dash === -1 ? '' : v.slice(dash + 1);
+            return { nums: core.split('.').map(Number), pre };
+          };
+          const compare = (a, b) => {
+            const A = parse(a);
+            const B = parse(b);
+            for (let i = 0; i < 3; i += 1) {
+              const d = (A.nums[i] ?? 0) - (B.nums[i] ?? 0);
+              if (d !== 0) return d < 0 ? -1 : 1;
+            }
+            if (A.pre === '' && B.pre === '') return 0;
+            if (A.pre === '') return 1; // release > its own prereleases
+            if (B.pre === '') return -1;
+            const as = A.pre.split('.');
+            const bs = B.pre.split('.');
+            for (let i = 0; i < Math.max(as.length, bs.length); i += 1) {
+              const x = as[i];
+              const y = bs[i];
+              if (x === undefined) return -1; // shorter prerelease is smaller
+              if (y === undefined) return 1;
+              const xn = /^\d+$/.test(x);
+              const yn = /^\d+$/.test(y);
+              if (xn && yn) {
+                const d = Number(x) - Number(y);
+                if (d !== 0) return d < 0 ? -1 : 1;
+              } else if (xn) {
+                return -1; // numeric identifiers sort below alphanumeric
+              } else if (yn) {
+                return 1;
+              } else if (x !== y) {
+                return x < y ? -1 : 1;
+              }
+            }
+            return 0;
+          };
+
+          if (existing.includes(fresh)) {
+            console.error(`::error::Version ${fresh} is already published on NPMJS. Pick a strictly-greater version, re-run Step 1, then Step 2.`);
+            process.exit(1);
+          }
+          const regression = existing.find((v) => compare(v, fresh) >= 0);
+          if (regression !== undefined) {
+            console.error(`::error::Version ${fresh} is NOT strictly greater than the already-published ${regression}.`);
+            console.error('::error::This package refuses to publish backwards or duplicate versions (per Creator discipline: no deprecations).');
+            process.exit(1);
+          }
+          console.log(`Monotonicity OK: ${fresh} is strictly greater than every existing version.`);
+          EOF
+          node /tmp/semver-check.mjs /tmp/existing-versions.json "$new_version"
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      - name: Validate package metadata
+        run: pnpm publint
+
+      - name: Pack dry-run (sanity check the artifact about to ship to npm)
+        run: pnpm pack --pack-destination /tmp
+
+      - name: Publish to npm
+        run: |
+          npm publish \
+            --access public \
+            --tag "${{ steps.resolve.outputs.dist_tag }}" \
+            --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Update GitHub Release title (REVIEW REQUIRED to PUBLISHED ON NPMJS)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="v${{ inputs.version }}"
+          new_title="[PUBLISHED ON NPMJS] @takk/racs@${{ inputs.version }}"
+          gh release edit "$tag" --title "$new_title"
+          # Also swap the status banner in the release body so the published
+          # state is visible from the release page itself, not just the
+          # title. The sed below strips the Step 1 banner line; the pattern
+          # matches the banner text verbatim, literal escaped period
+          # included, so the two workflows cannot drift apart silently.
+          current_body=$(gh release view "$tag" --json body --jq .body)
+          updated_body=$(printf '> **STATUS: PUBLISHED ON NPMJS.** This version was published to the npm registry on %s with provenance attestation. View on npm: https://www.npmjs.com/package/@takk/racs/v/%s\n\n%s' \
+            "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "${{ inputs.version }}" "$current_body" \
+            | sed -E 's/^> \*\*STATUS: REVIEW REQUIRED, NOT YET ON NPMJS\.\*\*.*$//' \
+            | awk 'BEGIN { prev_blank = 0 } /^$/ { if (prev_blank == 0) print; prev_blank = 1; next } { print; prev_blank = 0 }')
+          # Persist the body to a file so gh edit handles multi-line + special chars cleanly.
+          printf '%s\n' "$updated_body" > /tmp/release-body.md
+          gh release edit "$tag" --notes-file /tmp/release-body.md
+
+      - name: Verify published version on npm registry
+        run: |
+          # CDN propagation can take up to 60s; retry a few times.
+          for attempt in 1 2 3 4 5; do
+            published=$(npm view "@takk/racs@${{ inputs.version }}" version 2>/dev/null || true)
+            if [ "$published" = "${{ inputs.version }}" ]; then
+              echo "Verified: @takk/racs@${{ inputs.version }} is live on the registry."
+              exit 0
+            fi
+            echo "Attempt $attempt: registry not yet showing the new version, retrying in 12s..."
+            sleep 12
+          done
+          echo "::warning::npm registry did not reflect the publish within 60s. This is usually a CDN propagation delay, not a publish failure."
+
+      - name: Summary
+        run: |
+          echo "-------------------------------------------------"
+          echo "  Step 2 of 2 completed: package published to NPMJS."
+          echo "    Package        : @takk/racs"
+          echo "    Version        : ${{ inputs.version }}"
+          echo "    Dist-tag       : ${{ steps.resolve.outputs.dist_tag }}"
+          echo "    GitHub Release : https://github.com/${{ github.repository }}/releases/tag/v${{ inputs.version }}"
+          echo "    npm page       : https://www.npmjs.com/package/@takk/racs/v/${{ inputs.version }}"
+          echo "    Status         : PUBLISHED ON NPMJS"
+          echo "-------------------------------------------------"

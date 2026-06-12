@@ -1,0 +1,147 @@
+name: "Bug report"
+description: "Report a defect in @takk/racs."
+title: "[bug] <one-line summary>"
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Please fill every section honestly; the maintainer reads every issue personally and complete context speeds up triage.
+
+        **Security vulnerabilities are NOT bugs filed here.** Email <davcavalcante@proton.me> with prefix `[SECURITY]`.
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: "Affected surface"
+      description: "Which entry point or component does the bug occur in?"
+      options:
+        - "core (@takk/racs: plan / lint / record / stats / schedule / drift / invalidate / state)"
+        - "otel (@takk/racs/otel)"
+        - "vercel (@takk/racs/vercel)"
+        - "integrations (@takk/racs/integrations)"
+        - "web (@takk/racs/web)"
+        - "edge (@takk/racs/edge)"
+        - "cli (racs analyze / simulate / inspect / serve)"
+        - "types / .d.ts"
+        - "docs / README / SPEC"
+        - "CI / workflows"
+        - "not sure"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: provider
+    attributes:
+      label: "Provider profile"
+      description: "Which provider were you planning for when the bug occurred?"
+      options:
+        - "anthropic"
+        - "openai"
+        - "google"
+        - "bedrock"
+        - "xai"
+        - "groq"
+        - "deepseek"
+        - "mistral"
+        - "openrouter"
+        - "moonshot"
+        - "ollama"
+        - "lmstudio"
+        - "huggingface"
+        - "microsoft-foundry"
+        - "hermes"
+        - "custom"
+        - "not provider-specific"
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: "Package version"
+      description: "Output of `npm ls @takk/racs`, or the git SHA if testing local source."
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: "Reproduction steps"
+      description: "Minimal, deterministic steps. RACS is deterministic by design (seeded ids, injectable clock), so a fixed seed plus a fixed input must reproduce the bug byte-for-byte. Include the PlanInput or CacheUsage JSON."
+      placeholder: |
+        1. `pnpm add @takk/racs`
+        2. Code snippet:
+           ```ts
+           import { createRACS } from '@takk/racs';
+           const racs = createRACS({ seed: 7, clock: () => 1_750_000_000_000 });
+           // ...
+           ```
+        3. Observe...
+      render: bash
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected behavior"
+      description: "What did you expect to happen? Cite SPEC.md (lint semantics, break-even formulas, drift rules) or README if relevant."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: "Actual behavior"
+      description: "What happened instead? Paste the full plan (directives, findings, reasoning), drift reports, stack traces, or telemetry events as relevant."
+    validations:
+      required: true
+
+  - type: textarea
+    id: console
+    attributes:
+      label: "Terminal output"
+      description: "Paste relevant stderr/stdout here (it will be rendered as a code block). For CLI bugs, include the exact command and exit code."
+      render: console
+    validations:
+      required: false
+
+  - type: input
+    id: node
+    attributes:
+      label: "Runtime and version"
+      description: "Output of `node -v`, or the edge runtime / browser if not Node. The package requires Node >= 20; CI runs 22 and 24."
+      placeholder: "v22.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: "Operating system"
+      description: "e.g. macOS 26 (Apple Silicon), Ubuntu 24.04, Debian 12, Windows 11, Cloudflare Workers."
+      placeholder: "macOS 26 (Apple Silicon)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: "Additional context"
+      description: "Anything else the maintainer should know: related issues, conjectured root cause, provider documentation links if the bug is a profile-number mismatch."
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Pre-submission checklist"
+      options:
+        - label: "I read [SPEC.md](https://github.com/davccavalcante/racs/blob/main/SPEC.md) and confirmed this is not documented behavior (token estimates are heuristics, profile numbers are overridable research snapshots, forged usage skews analytics by design)."
+          required: true
+        - label: "I searched existing issues and PRs for duplicates."
+          required: true
+        - label: "This is NOT a security vulnerability (those go to email per SECURITY.md)."
+          required: true

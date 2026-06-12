@@ -1,0 +1,79 @@
+[
+  {
+    "name": "@takk/racs (ESM core)",
+    "path": "dist/index.js",
+    "limit": "20 kB",
+    "brotli": true,
+    "ignore": [
+      "node:fs/promises",
+      "node:path",
+      "node:http"
+    ]
+  },
+  {
+    "name": "@takk/racs (CJS core)",
+    "path": "dist/index.cjs",
+    "limit": "20 kB",
+    "brotli": true,
+    "ignore": [
+      "node:fs/promises",
+      "node:path",
+      "node:http"
+    ]
+  },
+  {
+    "name": "@takk/racs/otel",
+    "path": "dist/otel/index.js",
+    "limit": "6 kB",
+    "brotli": true,
+    "ignore": [
+      "node:fs/promises",
+      "node:path",
+      "node:http"
+    ]
+  },
+  {
+    "name": "@takk/racs/vercel",
+    "path": "dist/vercel/index.js",
+    "limit": "8 kB",
+    "brotli": true,
+    "ignore": [
+      "node:fs/promises",
+      "node:path",
+      "node:http"
+    ]
+  },
+  {
+    "name": "@takk/racs/integrations",
+    "path": "dist/integrations/index.js",
+    "limit": "6 kB",
+    "brotli": true,
+    "ignore": [
+      "node:fs/promises",
+      "node:path",
+      "node:http"
+    ]
+  },
+  {
+    "name": "@takk/racs/web (ESM)",
+    "path": "dist/web/index.js",
+    "limit": "22 kB",
+    "brotli": true,
+    "ignore": [
+      "node:fs/promises",
+      "node:path",
+      "node:http"
+    ]
+  },
+  {
+    "name": "@takk/racs/edge (ESM)",
+    "path": "dist/edge/index.js",
+    "limit": "22 kB",
+    "brotli": true,
+    "ignore": [
+      "node:fs/promises",
+      "node:path",
+      "node:http"
+    ]
+  }
+]

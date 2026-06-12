@@ -1,0 +1,31 @@
+# Code owners for @takk/racs (RACS, Remote Agent Context Store).
+#
+# GitHub uses this file to auto-request reviews on pull requests. The rules
+# are evaluated top-to-bottom; later patterns override earlier ones. Today
+# the project is single-maintainer (Creator-only); every PR routes to
+# @davccavalcante.
+
+# Catch-all (every file)
+*                              @davccavalcante
+
+# Public surface (source, tests, examples)
+/src/                          @davccavalcante
+/tests/                        @davccavalcante
+/examples/                     @davccavalcante
+
+# CI/CD and meta
+/.github/                      @davccavalcante
+/.github/workflows/            @davccavalcante
+/.github/RELEASING.md          @davccavalcante
+/.github/CONTRIBUTING.md       @davccavalcante
+/scripts/                      @davccavalcante
+
+# Governance documents
+/LICENSE                       @davccavalcante
+/NOTICE                        @davccavalcante
+/README.md                     @davccavalcante
+/CHANGELOG.md                  @davccavalcante
+/SPEC.md                       @davccavalcante
+/SECURITY.md                   @davccavalcante
+/PRIVACY.md                    @davccavalcante
+/package.json                  @davccavalcante

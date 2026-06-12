@@ -1,0 +1,2627 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+
+  <title>RACS: prefix-cache management for agents</title>
+  <meta name="description"
+    content="RACS (Remote Agent Context Store): zero-dependency prefix-cache planning for IM agents. Stability linting, provider directives, drift detection, savings.">
+  <meta name="keywords"
+    content="prompt caching, prefix cache, cache_control, prompt_cache_key, cachedContents, context caching, cache hit ratio, drift detection, prompt stability linting, llm agents, anthropic, openai, gemini, bedrock, node.js, typescript, takk, racs">
+  <meta name="author" content="David C Cavalcante">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+
+  <link rel="canonical" href="https://racs.takk.ag/">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="alternate icon" type="image/png" href="assets/apple-touch-icon.png">
+  <link rel="sitemap" type="application/xml" href="sitemap.xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/phosphor-icons@1.4.2/src/css/icons.min.css">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://racs.takk.ag/">
+  <meta property="og:title" content="RACS: prefix-cache management for agents">
+  <meta property="og:description"
+    content="RACS (Remote Agent Context Store) plans provider-faithful prefix-cache directives without ever calling a provider API. 16 providers, 4 adapter families, 9 lint codes, zero runtime dependencies.">
+  <meta property="og:image" content="https://racs.takk.ag/assets/og-image.png">
+  <meta property="og:image:secure_url" content="https://racs.takk.ag/assets/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="RACS - prefix-cache management for IM agents">
+  <meta property="og:site_name" content="RACS">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@davccavalcante">
+  <meta name="twitter:creator" content="@davccavalcante">
+  <meta name="twitter:title" content="RACS: prefix-cache management for agents">
+  <meta name="twitter:description"
+    content="Zero-dependency prefix-cache planning for IM agents: stability linting, provider-faithful directives, drift detection, savings analytics. 16 providers.">
+  <meta name="twitter:image" content="https://racs.takk.ag/assets/og-image.png">
+  <meta name="twitter:image:alt" content="RACS - prefix-cache management for IM agents">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "RACS",
+    "alternateName": "@takk/racs",
+    "headline": "RACS: prefix-cache management for agents",
+    "description": "RACS (Remote Agent Context Store) plans provider-faithful prefix-cache directives for Massive Intelligence (IM) agent workloads without ever calling a provider API: stability linting, directive planning across 16 provider profiles and 4 adapter families, deterministic prefix keys, break-even math, TTL keep-warm scheduling, drift detection, and hit-ratio and USD savings analytics with user-supplied pricing. Zero runtime dependencies.",
+    "url": "https://racs.takk.ag/",
+    "downloadUrl": "https://www.npmjs.com/package/@takk/racs",
+    "image": "https://racs.takk.ag/assets/og-image.png",
+    "softwareVersion": "1.0.0",
+    "applicationCategory": "DeveloperApplication",
+    "applicationSubCategory": "Prefix-cache management library",
+    "operatingSystem": "Node.js 20 or newer, tested on Node 22 and Node 24; web and edge entry points for browser and edge runtimes",
+    "programmingLanguage": ["TypeScript", "JavaScript"],
+    "runtimePlatform": "Node.js",
+    "license": "https://www.apache.org/licenses/LICENSE-2.0",
+    "keywords": "prompt caching, prefix cache, cache_control, prompt_cache_key, cachedContents, drift detection, stability linting, node.js, typescript",
+    "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/InStock"},
+    "author": {
+      "@type": "Person",
+      "name": "David C Cavalcante",
+      "email": "davcavalcante@proton.me",
+      "url": "https://github.com/davccavalcante",
+      "sameAs": ["https://linkedin.com/in/hellodav", "https://x.com/davccavalcante", "https://github.com/davccavalcante", "https://takk.ag"]
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Takk Innovate Studio",
+      "url": "https://takk.ag",
+      "logo": "https://racs.takk.ag/assets/takk.png"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Takk Innovate Studio",
+    "url": "https://takk.ag",
+    "logo": "https://racs.takk.ag/assets/takk.png",
+    "founder": {
+      "@type": "Person",
+      "name": "David C Cavalcante",
+      "email": "davcavalcante@proton.me",
+      "url": "https://github.com/davccavalcante"
+    },
+    "sameAs": ["https://github.com/davccavalcante", "https://linkedin.com/in/hellodav", "https://x.com/davccavalcante"]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "RACS",
+    "alternateName": "@takk/racs",
+    "url": "https://racs.takk.ag/",
+    "publisher": {"@type": "Organization", "name": "Takk Innovate Studio", "url": "https://takk.ag"}
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "Is RACS production-ready at 1.0.0?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. 187 tests across 13 suites pass on Node 22 and Node 24, with coverage at 92.46 percent statements, 82.09 percent branches, 93.33 percent functions, and 92.49 percent lines. TypeScript strict mode, lint, and package checks are clean, and every release ships with SLSA provenance."}},
+      {"@type": "Question", "name": "Does RACS ever call my provider's API?", "acceptedAnswer": {"@type": "Answer", "text": "Never. RACS plans directives, lints layouts, schedules refreshes, and accounts usage entirely in-process. It holds zero credentials and opens zero network connections; the host application stays in control of every provider call and applies the directives itself."}},
+      {"@type": "Question", "name": "How is RACS different from a gateway or proxy?", "acceptedAnswer": {"@type": "Answer", "text": "A gateway sits on the wire and forwards traffic. RACS is a planning engine: it computes the cache directives your existing client applies on its own requests. As of June 2026 we found no shipping npm package that combines stability linting, multi-provider directive planning, drift detection, persistence, and savings analytics in one library."}},
+      {"@type": "Question", "name": "Which providers does RACS support?", "acceptedAnswer": {"@type": "Answer", "text": "16 profiles over 4 adapter families. Breakpoint: anthropic, bedrock, hermes, microsoft-foundry. Routing-key: openai, xai, mistral, moonshot, openrouter. Resource: google. Passive: groq, deepseek, ollama, lmstudio, huggingface, custom. Every profile value is overridable per engine instance, so a provider changing terms is a configuration edit, not a release."}},
+      {"@type": "Question", "name": "How much can prefix caching actually save?", "acceptedAnswer": {"@type": "Answer", "text": "Measured agent workloads report 41 to 80 percent savings on input spend (arXiv 2601.06007, January 2026). Your number depends on prefix share, hit ratio, and the provider multipliers; the calculator on this page estimates it from your own figures, and the ledger reports the measured truth once you record real usage."}},
+      {"@type": "Question", "name": "What do the nine lint codes catch?", "acceptedAnswer": {"@type": "Answer", "text": "The documented production cache-killers: timestamps and identifiers inside segments declared stable, volatile content placed early in the prompt, unstable tool definitions, prefixes below the provider minimum, breakpoints placed after volatile segments, write-premium traps, wrong segment ordering, and missing stability declarations."}},
+      {"@type": "Question", "name": "Does RACS see my prompt content?", "acceptedAnswer": {"@type": "Answer", "text": "Only if you pass it. Every segment accepts a contentHash instead of content. In hash-only mode RACS never sees the text, and plans, drift reports, persisted snapshots, and telemetry carry hashes and token counts only."}},
+      {"@type": "Question", "name": "How does drift detection work?", "acceptedAnswer": {"@type": "Answer", "text": "Every plan fingerprints its stable segments with deterministic FNV-1a 64 hashing. When a later plan for the same agent lineage produces a different prefix key, RACS emits a drift report naming exactly which segments changed and how many cached tokens were invalidated."}},
+      {"@type": "Question", "name": "Where does state live, and can it persist?", "acceptedAnswer": {"@type": "Answer", "text": "In memory by default. The file backend persists snapshots on Node, and kvState wraps any Redis, Upstash, or Cloudflare KV style client in one line. Persistence is optional; the engine is fully functional without it."}},
+      {"@type": "Question", "name": "How are USD savings calculated?", "acceptedAnswer": {"@type": "Answer", "text": "From pricing you supply. RACS never hardcodes provider prices: you pass a table in USD per million tokens, and the ledger combines it with normalized usage reports into hit ratios, savings, and net effect after write premiums. Without a pricing table, every statistic is still reported in tokens."}}
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Takk Innovate Studio", "item": "https://takk.ag"},
+      {"@type": "ListItem", "position": 2, "name": "RACS", "item": "https://racs.takk.ag/"}
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --font-family-primary: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --font-family-display: "Newsreader", Georgia, "Times New Roman", serif;
+      --font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --font-size-xs: 12px;
+      --font-size-sm: 14px;
+      --font-size-md: 16px;
+      --font-size-lg: 18px;
+      --font-size-xl: 20px;
+      --font-size-2xl: 36px;
+      --font-size-3xl: 48px;
+      --font-size-display: clamp(36px, 6vw, 64px);
+      --font-weight-base: 500;
+      --font-line-height-base: 1.5;
+      --color-text-primary: #1c1917;
+      --color-text-tertiary: #78716c;
+      --color-text-inverse: #fafaf9;
+      --color-surface-base: #000000;
+      --color-surface-muted: #f4f3f2;
+      --color-surface-strong: #1d1511;
+      --color-surface-page: #ffffff;
+      --color-surface-card: #fafaf9;
+      --color-text-secondary: #57534e;
+      --color-border: #e7e5e4;
+      --color-border-strong: #d6d3d1;
+      --color-strong-hover: #382a20;
+      --color-focus-ring: #1d1511;
+      --color-error: #b91c1c;
+      --color-error-surface: #fef2f2;
+      --color-success: #15803d;
+      --color-success-surface: #f0fdf4;
+      --color-amber: #a35500;
+      --color-code-bg: #1c1917;
+      --color-code-fg: #fafaf9;
+      --color-code-token-keyword: #f5a98a;
+      --color-code-token-string: #a3d9a5;
+      --color-code-token-comment: #a8a29e;
+      --color-code-token-func: #93c5fd;
+      --color-code-token-num: #fcd34d;
+      --space-1: 8px;
+      --space-2: 10px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 64px;
+      --space-7: 112px;
+      --space-8: 216px;
+      --radius-xs: 8px;
+      --radius-sm: 12px;
+      --radius-md: 16px;
+      --radius-lg: 20px;
+      --motion-instant: 200ms;
+      --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+      --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.06);
+      --shadow-md: 0 6px 24px rgba(28, 25, 23, 0.08);
+      --shadow-lg: 0 18px 48px rgba(28, 25, 23, 0.12);
+    }
+
+    [data-theme="dark"] {
+      --color-surface-page: #000000;
+      --color-surface-card: #161412;
+      --color-surface-muted: #1c1917;
+      --color-text-primary: #fafaf9;
+      --color-text-secondary: #d6d3d1;
+      --color-text-tertiary: #a8a29e;
+      --color-text-inverse: #1c1917;
+      --color-border: #2a2724;
+      --color-border-strong: #3a3531;
+      --color-surface-strong: #e7dcc9;
+      --color-strong-hover: #d8c9b2;
+      --color-focus-ring: #d8c9b2;
+      --color-error: #f87171;
+      --color-error-surface: #2a1414;
+      --color-success: #4ade80;
+      --color-success-surface: #14241c;
+      --color-amber: #e8b552;
+      --color-code-bg: #0a0908;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.7);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --color-surface-page: #000000;
+        --color-surface-card: #161412;
+        --color-surface-muted: #1c1917;
+        --color-text-primary: #fafaf9;
+        --color-text-secondary: #d6d3d1;
+        --color-text-tertiary: #a8a29e;
+        --color-text-inverse: #1c1917;
+        --color-border: #2a2724;
+        --color-border-strong: #3a3531;
+        --color-surface-strong: #e7dcc9;
+        --color-strong-hover: #d8c9b2;
+        --color-focus-ring: #d8c9b2;
+        --color-error: #f87171;
+        --color-error-surface: #2a1414;
+        --color-success: #4ade80;
+        --color-success-surface: #14241c;
+        --color-amber: #e8b552;
+        --color-code-bg: #0a0908;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+        --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.5);
+        --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.7);
+      }
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-family-primary);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-base);
+      line-height: var(--font-line-height-base);
+      color: var(--color-text-primary);
+      background: var(--color-surface-page);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      transition: background var(--motion-instant) var(--motion-ease),
+        color var(--motion-instant) var(--motion-ease);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--color-focus-ring);
+      outline-offset: 2px;
+      border-radius: var(--radius-xs);
+    }
+
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    a {
+      color: var(--color-text-primary);
+      text-decoration: none;
+      transition: color var(--motion-instant) var(--motion-ease);
+    }
+
+    a:hover {
+      color: var(--color-strong-hover);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    p {
+      margin: 0 0 var(--space-3);
+      color: var(--color-text-secondary);
+    }
+
+    p.lead {
+      font-size: var(--font-size-lg);
+      line-height: 1.6;
+      color: var(--color-text-secondary);
+      max-width: 60ch;
+    }
+
+    ul,
+    ol {
+      padding-left: var(--space-4);
+      color: var(--color-text-secondary);
+      margin: 0 0 var(--space-3);
+    }
+
+    li {
+      margin-bottom: var(--space-1);
+    }
+
+    strong {
+      color: var(--color-text-primary);
+    }
+
+    .display,
+    h1,
+    h2 {
+      font-family: var(--font-family-display);
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      line-height: 1.08;
+      color: var(--color-text-primary);
+      margin: 0 0 var(--space-3);
+    }
+
+    h1 {
+      font-size: var(--font-size-display);
+      line-height: 1.02;
+      letter-spacing: -0.025em;
+    }
+
+    h2 {
+      font-size: var(--font-size-2xl);
+    }
+
+    h3 {
+      font-family: var(--font-family-primary);
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      letter-spacing: -0.005em;
+      margin: 0 0 var(--space-2);
+    }
+
+    h4 {
+      font-family: var(--font-family-primary);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin: 0 0 var(--space-2);
+    }
+
+    .eyebrow {
+      font-family: var(--font-family-primary);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-text-tertiary);
+      margin: 0 0 var(--space-3);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .eyebrow i {
+      color: var(--color-text-secondary);
+      font-size: 14px;
+    }
+
+    code {
+      font-family: var(--font-family-mono);
+      font-size: 0.88em;
+      background: var(--color-surface-muted);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border);
+    }
+
+    pre {
+      font-family: var(--font-family-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      background: var(--color-code-bg);
+      color: var(--color-code-fg);
+      padding: var(--space-4) var(--space-5);
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+      margin: 0 0 var(--space-3);
+      position: relative;
+      border: 1px solid var(--color-border);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: 0;
+      color: inherit;
+      font-size: inherit;
+    }
+
+    pre .tk-keyword {
+      color: var(--color-code-token-keyword);
+    }
+
+    pre .tk-string {
+      color: var(--color-code-token-string);
+    }
+
+    pre .tk-comment {
+      color: var(--color-code-token-comment);
+      font-style: italic;
+    }
+
+    pre .tk-func {
+      color: var(--color-code-token-func);
+    }
+
+    pre .tk-num {
+      color: var(--color-code-token-num);
+    }
+
+    .skip-link {
+      position: absolute;
+      left: var(--space-4);
+      top: -64px;
+      background: var(--color-surface-strong);
+      color: var(--color-text-inverse);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-xs);
+      z-index: 100;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      transition: top var(--motion-instant) var(--motion-ease);
+    }
+
+    .skip-link:focus {
+      top: var(--space-4);
+      text-decoration: none;
+    }
+
+    /* ---------- Icon normalization ----------
+       Phosphor 1.4.2 uses font-icons via :before content, which inherit the
+       body line-height (1.5) and render off-center inside flex/grid hosts.
+       Forcing line-height:1 + inline-flex display gives every icon a square
+       intrinsic box that centers cleanly. The same applies to our custom
+       inline .x-icon SVG so the X mark sits on the same baseline grid as the
+       Phosphor glyphs. */
+    [class^="ph-"],
+    [class*=" ph-"],
+    .x-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      vertical-align: middle;
+      flex: 0 0 auto;
+      text-decoration: none;
+    }
+
+    a:hover [class^="ph-"],
+    a:hover [class*=" ph-"],
+    a:hover .x-icon {
+      text-decoration: none;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding-left: var(--space-5);
+      padding-right: var(--space-5);
+    }
+
+    .wrap--narrow {
+      max-width: 760px;
+    }
+
+    header.site {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: color-mix(in srgb, var(--color-surface-page) 86%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      height: 64px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--font-family-primary);
+      font-weight: 700;
+      font-size: var(--font-size-md);
+      color: var(--color-text-primary);
+      letter-spacing: -0.015em;
+    }
+
+    .brand:hover {
+      text-decoration: none;
+      color: var(--color-text-primary);
+    }
+
+    .brand .mark {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-xs);
+      background: var(--color-surface-strong);
+      color: var(--color-text-inverse);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-family-display);
+      font-size: var(--font-size-md);
+      line-height: 1;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      display: inline-block;
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-xs);
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+      transition: background var(--motion-instant) var(--motion-ease), color var(--motion-instant) var(--motion-ease);
+    }
+
+    .nav-links a:hover {
+      background: var(--color-surface-muted);
+      color: var(--color-text-primary);
+      text-decoration: none;
+    }
+
+    .nav-tail {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    @media (max-width: 860px) {
+      .nav-links {
+        display: none;
+      }
+    }
+
+    .theme-toggle {
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-xs);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-card);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: background var(--motion-instant) var(--motion-ease), color var(--motion-instant) var(--motion-ease), border-color var(--motion-instant) var(--motion-ease);
+    }
+
+    .theme-toggle:hover {
+      background: var(--color-surface-muted);
+      color: var(--color-text-primary);
+    }
+
+    .theme-toggle i {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      display: none;
+    }
+
+    :root[data-theme="dark"] .theme-toggle .ph-sun {
+      display: inline-flex;
+    }
+
+    :root[data-theme="light"] .theme-toggle .ph-moon {
+      display: inline-flex;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .theme-toggle .ph-sun {
+        display: inline-flex;
+      }
+
+      :root[data-theme="light"] .theme-toggle .ph-moon {
+        display: inline-flex;
+      }
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) .theme-toggle .ph-moon {
+        display: inline-flex;
+      }
+
+      :root[data-theme="dark"] .theme-toggle .ph-sun {
+        display: inline-flex;
+      }
+    }
+
+    .btn {
+      --btn-bg: var(--color-surface-strong);
+      --btn-fg: var(--color-text-inverse);
+      --btn-border: transparent;
+      font-family: var(--font-family-primary);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-1);
+      padding: var(--space-3) var(--space-4);
+      min-height: 44px;
+      border-radius: var(--radius-xs);
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--btn-fg);
+      cursor: pointer;
+      user-select: none;
+      text-decoration: none;
+      transition: background var(--motion-instant) var(--motion-ease), border-color var(--motion-instant) var(--motion-ease), transform var(--motion-instant) var(--motion-ease);
+    }
+
+    .btn:hover {
+      background: var(--color-strong-hover);
+      color: var(--btn-fg);
+      text-decoration: none;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn i {
+      font-size: 16px;
+    }
+
+    .btn--secondary {
+      --btn-bg: transparent;
+      --btn-fg: var(--color-text-primary);
+      --btn-border: var(--color-border-strong);
+    }
+
+    .btn--secondary:hover {
+      background: var(--color-surface-muted);
+      color: var(--color-text-primary);
+    }
+
+    .btn--sm {
+      min-height: 36px;
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--font-size-xs);
+    }
+
+    section {
+      padding-top: var(--space-7);
+      padding-bottom: var(--space-7);
+    }
+
+    section.alt {
+      background: var(--color-surface-muted);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .section-head {
+      max-width: 680px;
+      margin-bottom: var(--space-6);
+    }
+
+    .section-head h2 {
+      font-size: var(--font-size-2xl);
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-md);
+    }
+
+    .hero {
+      padding-top: var(--space-7);
+      padding-bottom: var(--space-6);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+      align-items: center;
+    }
+
+    @media (min-width: 880px) {
+      .hero-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: var(--space-5);
+      }
+    }
+
+    .hero h1 {
+      margin: var(--space-3) 0 var(--space-4);
+      max-width: 18ch;
+    }
+
+    .hero .lead {
+      max-width: 52ch;
+      font-size: var(--font-size-lg);
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-5);
+    }
+
+    .hero-install {
+      margin-top: var(--space-4);
+      max-width: 420px;
+    }
+
+    .hero-install pre {
+      margin: 0;
+      padding: var(--space-3) var(--space-4);
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+      padding-top: var(--space-5);
+      border-top: 1px solid var(--color-border);
+    }
+
+    @media (min-width: 600px) {
+      .hero-meta {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .hero-meta .item .k {
+      font-family: var(--font-family-display);
+      font-size: var(--font-size-xl);
+      color: var(--color-text-primary);
+      letter-spacing: -0.01em;
+      display: block;
+    }
+
+    .hero-meta .item .v {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-tertiary);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-top: 2px;
+      display: block;
+    }
+
+    .hero-art {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      max-width: 420px;
+      margin: 0 auto;
+      border-radius: var(--radius-md);
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      padding: var(--space-5);
+    }
+
+    .hero-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .grid {
+      display: grid;
+      gap: var(--space-4);
+    }
+
+    .grid--2 {
+      grid-template-columns: 1fr;
+    }
+
+    .grid--3 {
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 700px) {
+      .grid--2 {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .grid--3 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (min-width: 980px) {
+      .grid--3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    .card {
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      transition: transform var(--motion-instant) var(--motion-ease), box-shadow var(--motion-instant) var(--motion-ease), border-color var(--motion-instant) var(--motion-ease);
+    }
+
+    .card:hover {
+      border-color: var(--color-border-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card .icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-xs);
+      background: var(--color-surface-muted);
+      color: var(--color-surface-strong);
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--color-border);
+    }
+
+    .card .icon-wrap i {
+      font-size: 20px;
+    }
+
+    .card h3 {
+      margin: 0;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+      line-height: 1.6;
+    }
+
+    .card .benefit {
+      margin-top: var(--space-2);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-primary);
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-surface-muted);
+      border-left: 3px solid var(--color-success);
+      border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+      line-height: 1.55;
+    }
+
+    .card .benefit::before {
+      content: "Outcome";
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-success);
+      margin-bottom: 2px;
+    }
+
+    .size-pill {
+      font-family: var(--font-family-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--color-surface-muted);
+      border: 1px solid var(--color-border-strong);
+      color: var(--color-text-secondary);
+      width: max-content;
+    }
+
+    .fam-badge {
+      display: inline-flex;
+      align-items: center;
+      width: max-content;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-family: var(--font-family-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .fam-badge.breakpoint {
+      background: color-mix(in srgb, var(--color-success) 14%, transparent);
+      color: var(--color-success);
+    }
+
+    .fam-badge.routing-key {
+      background: color-mix(in srgb, var(--color-amber) 14%, transparent);
+      color: var(--color-amber);
+    }
+
+    .fam-badge.resource {
+      background: color-mix(in srgb, var(--color-surface-strong) 12%, transparent);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border-strong);
+    }
+
+    .fam-badge.passive {
+      background: color-mix(in srgb, var(--color-text-tertiary) 14%, transparent);
+      color: var(--color-text-tertiary);
+    }
+
+    .providers {
+      display: grid;
+      gap: var(--space-3);
+      grid-template-columns: 1fr;
+      margin-top: var(--space-5);
+    }
+
+    @media (min-width: 640px) {
+      .providers {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (min-width: 980px) {
+      .providers {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .provider-tile {
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      box-shadow: var(--shadow-sm);
+      transition: border-color var(--motion-instant) var(--motion-ease), box-shadow var(--motion-instant) var(--motion-ease);
+    }
+
+    .provider-tile:hover {
+      border-color: var(--color-border-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .provider-tile .pid {
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+
+    .provider-tile p {
+      margin: 0;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-tertiary);
+      line-height: 1.55;
+    }
+
+    .tablist {
+      display: inline-flex;
+      flex-wrap: wrap;
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-xs);
+      padding: 4px;
+      gap: 2px;
+      margin-bottom: var(--space-3);
+    }
+
+    .tab {
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-xs);
+      padding: var(--space-2) var(--space-3);
+      min-height: 32px;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--color-text-secondary);
+      border: 0;
+      cursor: pointer;
+      transition: background var(--motion-instant) var(--motion-ease), color var(--motion-instant) var(--motion-ease);
+    }
+
+    .tab:hover {
+      color: var(--color-text-primary);
+      background: var(--color-surface-muted);
+    }
+
+    .tab[aria-selected="true"] {
+      background: var(--color-surface-strong);
+      color: var(--color-text-inverse);
+    }
+
+    .tabpanel {
+      display: none;
+    }
+
+    .tabpanel[data-active="true"] {
+      display: block;
+    }
+
+    .pre-wrap {
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(250, 250, 249, 0.08);
+      color: var(--color-code-fg);
+      border: 1px solid rgba(250, 250, 249, 0.14);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-family: var(--font-family-primary);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background var(--motion-instant) var(--motion-ease);
+    }
+
+    .copy-btn i {
+      font-size: 12px;
+    }
+
+    .copy-btn:hover {
+      background: rgba(250, 250, 249, 0.16);
+    }
+
+    .copy-btn.copied {
+      background: rgba(132, 204, 22, 0.18);
+      color: #a3d9a5;
+      border-color: rgba(132, 204, 22, 0.3);
+    }
+
+    .term pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .calc {
+      display: grid;
+      gap: var(--space-5);
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    @media (min-width: 880px) {
+      .calc {
+        grid-template-columns: 1.05fr 0.95fr;
+      }
+    }
+
+    .calc-panel {
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .calc-field {
+      margin-bottom: var(--space-5);
+    }
+
+    .calc-field:last-child {
+      margin-bottom: 0;
+    }
+
+    .calc-field>label {
+      display: block;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-2);
+    }
+
+    .calc-field .hint {
+      display: block;
+      font-size: var(--font-size-xs);
+      color: var(--color-text-tertiary);
+      margin-top: var(--space-1);
+      line-height: 1.5;
+    }
+
+    .calc-field input[type="number"],
+    .calc-field select {
+      width: 100%;
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-primary);
+      background: var(--color-surface-page);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-xs);
+      padding: var(--space-2) var(--space-3);
+      min-height: 44px;
+    }
+
+    .calc-slider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .calc-slider input[type="range"] {
+      flex: 1;
+      accent-color: var(--color-surface-strong);
+      min-height: 44px;
+      margin: 0;
+    }
+
+    [data-theme="dark"] .calc-slider input[type="range"] {
+      accent-color: var(--color-surface-strong);
+    }
+
+    .calc-slider output {
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-primary);
+      min-width: 52px;
+      text-align: right;
+    }
+
+    .calc-result .label {
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-text-tertiary);
+      margin: 0 0 var(--space-2);
+    }
+
+    .calc-usd {
+      font-family: var(--font-family-display);
+      font-size: clamp(40px, 6vw, 56px);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--color-text-primary);
+      margin: 0 0 var(--space-1);
+    }
+
+    .calc-usd.negative {
+      color: var(--color-error);
+    }
+
+    .calc-pct {
+      font-size: var(--font-size-md);
+      color: var(--color-text-secondary);
+      margin: 0 0 var(--space-4);
+    }
+
+    .calc-breakdown {
+      margin: 0 0 var(--space-4);
+    }
+
+    .calc-breakdown div {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-3);
+      border-top: 1px solid var(--color-border);
+      padding: var(--space-2) 0;
+    }
+
+    .calc-breakdown dt {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    .calc-breakdown dd {
+      margin: 0;
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-primary);
+    }
+
+    .calc-note {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-primary);
+      background: var(--color-surface-muted);
+      border-left: 3px solid var(--color-amber);
+      border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+      padding: var(--space-2) var(--space-3);
+      margin: 0 0 var(--space-3);
+      line-height: 1.55;
+    }
+
+    .calc-caption {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-tertiary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .stack {
+      display: grid;
+      gap: var(--space-2);
+    }
+
+    .stack-item {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--space-2) var(--space-4);
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-4) var(--space-5);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stack-item .pkg {
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text-primary);
+      min-width: 200px;
+    }
+
+    .stack-item p {
+      margin: 0;
+      flex: 1 1 34ch;
+      font-size: var(--font-size-sm);
+      line-height: 1.6;
+    }
+
+    .stack-item .repo {
+      font-family: var(--font-family-mono);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-family: var(--font-family-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .badge.this-pkg {
+      background: color-mix(in srgb, var(--color-success) 14%, transparent);
+      color: var(--color-success);
+    }
+
+    .faq details {
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-4) var(--space-5);
+      margin-bottom: var(--space-2);
+      transition: border-color var(--motion-instant) var(--motion-ease);
+    }
+
+    .faq details:hover {
+      border-color: var(--color-border-strong);
+    }
+
+    .faq details[open] {
+      border-color: var(--color-border-strong);
+    }
+
+    .faq summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--font-family-primary);
+      font-size: var(--font-size-md);
+    }
+
+    .faq summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq summary i.ph-plus,
+    .faq summary i.ph-minus {
+      margin-left: auto;
+      color: var(--color-text-secondary);
+    }
+
+    .faq details:not([open]) summary i.ph-minus {
+      display: none;
+    }
+
+    .faq details[open] summary i.ph-plus {
+      display: none;
+    }
+
+    .faq details p {
+      margin: var(--space-3) 0 0;
+      line-height: 1.65;
+    }
+
+    .author-card {
+      display: grid;
+      gap: var(--space-5);
+      grid-template-columns: 1fr;
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-sm);
+    }
+
+    @media (min-width: 760px) {
+      .author-card {
+        grid-template-columns: 280px 1fr;
+        align-items: start;
+        gap: var(--space-6);
+      }
+    }
+
+    .author-card .author-name {
+      font-family: var(--font-family-display);
+      font-size: clamp(28px, 4vw, 36px);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--color-text-primary);
+      margin: 0 0 var(--space-2);
+    }
+
+    .author-card .author-role {
+      font-family: var(--font-family-primary);
+      font-size: var(--font-size-lg);
+      font-weight: 500;
+      letter-spacing: -0.005em;
+      line-height: 1.4;
+      color: var(--color-text-secondary);
+      margin: 0 0 var(--space-4);
+    }
+
+    .author-card ul.author-links {
+      list-style: none;
+      padding: 0;
+      margin: var(--space-3) 0 0;
+      display: grid;
+      gap: var(--space-1);
+    }
+
+    .author-card ul.author-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      width: max-content;
+      text-decoration: none;
+    }
+
+    .author-card ul.author-links a:hover {
+      color: var(--color-text-primary);
+      text-decoration: none;
+    }
+
+    .author-card ul.author-links i,
+    .author-card ul.author-links .x-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+      color: var(--color-text-tertiary);
+      transition: color var(--motion-instant) var(--motion-ease);
+    }
+
+    .author-card ul.author-links a:hover i,
+    .author-card ul.author-links a:hover .x-icon {
+      color: var(--color-text-primary);
+    }
+
+    /* Footer (always uses the dark canvas; palette is hardcoded so dark
+       mode does NOT invert text-inverse and break readability) */
+    footer.site {
+      background: #000000;
+      color: #fafaf9;
+      padding: var(--space-6) 0 var(--space-5);
+      margin-top: 0;
+      border-top: 1px solid #2a2724;
+    }
+
+    footer.site .footer-grid {
+      display: grid;
+      gap: var(--space-5);
+      grid-template-columns: 1fr;
+      margin-bottom: var(--space-5);
+    }
+
+    @media (min-width: 760px) {
+      footer.site .footer-grid {
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+      }
+    }
+
+    footer.site .brand {
+      color: #fafaf9;
+    }
+
+    footer.site .brand:hover {
+      color: #fafaf9;
+      text-decoration: none;
+    }
+
+    footer.site .brand .mark {
+      background: #fafaf9;
+      color: #000000;
+    }
+
+    footer.site .brand-block p {
+      color: #a8a29e;
+      font-size: var(--font-size-sm);
+      margin: var(--space-2) 0 0;
+      max-width: 42ch;
+      line-height: 1.6;
+    }
+
+    footer.site h3 {
+      color: #fafaf9;
+      font-size: var(--font-size-sm);
+      font-weight: 700;
+      margin: 0 0 var(--space-2);
+    }
+
+    footer.site ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    footer.site li {
+      margin-bottom: var(--space-1);
+    }
+
+    footer.site a {
+      color: #d6d3d1;
+      font-size: var(--font-size-sm);
+      transition: color var(--motion-instant) var(--motion-ease);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    footer.site a:hover {
+      color: #fafaf9;
+      text-decoration: none;
+    }
+
+    footer.site a i,
+    footer.site a .x-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+
+    footer.site .bottom-bar {
+      border-top: 1px solid #2a2724;
+      padding-top: var(--space-4);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    footer.site .bottom-bar .legal,
+    footer.site .bottom-bar .legal * {
+      font-size: var(--font-size-xs);
+      color: #a8a29e;
+      max-width: 60ch;
+      line-height: 1.6;
+    }
+
+    footer.site .bottom-bar .legal a {
+      color: #d6d3d1;
+    }
+
+    footer.site .bottom-bar .legal a:hover {
+      color: #fafaf9;
+    }
+
+    footer.site .by-takk {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      color: #d6d3d1;
+      font-size: var(--font-size-xs);
+      letter-spacing: 0.04em;
+    }
+
+    footer.site .by-takk img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #fafaf9;
+    }
+
+    footer.site .by-takk:hover {
+      color: #fafaf9;
+      text-decoration: none;
+    }
+
+    /* Custom inline SVG icon for X (the artist formerly known as Twitter) -
+       Phosphor 1.4.2 does not ship an x-logo glyph; we keep the rest on
+       Phosphor and only inline the X mark, sized and coloured like a Phosphor
+       icon so it lives in the same rhythm. */
+    .x-icon {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      vertical-align: -0.125em;
+      fill: currentColor;
+      flex: 0 0 auto;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: rise 600ms var(--motion-ease) forwards;
+    }
+
+    @keyframes rise {
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site" role="banner">
+    <div class="wrap nav">
+      <a href="#top" class="brand" aria-label="RACS home">
+        <span class="mark" aria-hidden="true">r</span>
+        <span>RACS</span>
+      </a>
+      <nav aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="#engine">Engine</a></li>
+          <li><a href="#providers">Providers</a></li>
+          <li><a href="#quickstart">Quickstart</a></li>
+          <li><a href="#calculator">Calculator</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="https://github.com/davccavalcante/racs" rel="noopener external">GitHub</a></li>
+        </ul>
+      </nav>
+      <div class="nav-tail">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+          <i class="ph-moon" aria-hidden="true"></i>
+          <i class="ph-sun" aria-hidden="true"></i>
+        </button>
+        <a class="btn btn--sm" href="https://www.npmjs.com/package/@takk/racs" rel="noopener external">
+          <i class="ph-download-simple" aria-hidden="true"></i>
+          <span>Get on npm</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="hero" id="top">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div class="reveal">
+            <span class="eyebrow"><i class="ph-package" aria-hidden="true"></i>@takk/racs - v1.0.0 -
+              Apache-2.0</span>
+            <h1>Cache the prefix.<br>Bank the difference.</h1>
+            <p class="lead">
+              <strong>RACS (Remote Agent Context Store)</strong> plans provider-faithful prefix-cache directives for
+              Massive Intelligence (IM) agents without ever calling a provider API. Declare the prompt as segments;
+              RACS lints the layout for the documented cache-killers, emits the exact directive your provider
+              understands, schedules keep-warm refreshes, detects prefix drift, and reports savings in your own
+              pricing. Zero credentials, zero network, the host stays in control.
+            </p>
+            <div class="hero-install pre-wrap">
+              <button class="copy-btn" data-copy="pnpm add @takk/racs" aria-label="Copy install command"><i
+                  class="ph-copy" aria-hidden="true"></i><span>Copy</span></button>
+              <pre><code><span class="tk-keyword">pnpm</span> add @takk/racs</code></pre>
+            </div>
+            <div class="hero-cta">
+              <a class="btn" href="#quickstart"><i class="ph-arrow-down" aria-hidden="true"></i><span>Quickstart in
+                  five minutes</span></a>
+              <a class="btn btn--secondary" href="https://github.com/davccavalcante/racs" rel="noopener external"><i
+                  class="ph-github-logo" aria-hidden="true"></i><span>View on GitHub</span></a>
+            </div>
+            <div class="hero-meta">
+              <div class="item"><span class="k">187</span><span class="v">tests passing</span></div>
+              <div class="item"><span class="k">92%</span><span class="v">coverage</span></div>
+              <div class="item"><span class="k">0</span><span class="v">runtime deps</span></div>
+              <div class="item"><span class="k">16</span><span class="v">provider profiles</span></div>
+            </div>
+          </div>
+          <div class="hero-art reveal" aria-hidden="true">
+            <img src="assets/racs.png" alt="RACS project mark" width="500" height="500" loading="eager"
+              decoding="async">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="engine" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow"><i class="ph-stack" aria-hidden="true"></i>The engine</span>
+          <h2>Five components and one invariant.</h2>
+          <p>Prefix caching fails in production for boring reasons: a timestamp in the system prompt, a tool list that
+            reorders itself, a layout that puts the volatile part first. An OpenClaw issue measured ten times the
+            expected cost from exactly that failure mode. RACS makes each of these a planned, linted, measured
+            decision.</p>
+        </div>
+        <div class="grid grid--3">
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-magnifying-glass" aria-hidden="true"></i></div>
+            <h3>Stability analyzer</h3>
+            <p>Nine lint codes catch the documented cache-killers before they bill you: timestamps and identifiers in
+              segments declared stable, volatile-early layouts, unstable tool definitions, below-minimum prefixes,
+              write-premium traps. Errors defeat caching, warnings cost money, and <code>racs analyze</code> exits
+              nonzero in CI.</p>
+            <p class="benefit">The silent cache-bust class of incident becomes a failed build instead of a surprise on
+              the invoice.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-tree-structure" aria-hidden="true"></i></div>
+            <h3>Directive planner</h3>
+            <p>One <code>plan()</code> call resolves the provider profile and emits the directive that provider
+              actually understands, across four adapter families: breakpoint (<code>cache_control</code>,
+              <code>cachePoint</code>), routing-key (<code>prompt_cache_key</code>), resource
+              (<code>cachedContents</code>), and passive (ordering advice only). Deterministic FNV-1a 64 prefix keys
+              and break-even math come with every plan.</p>
+            <p class="benefit">16 providers, 4 code paths, zero per-provider conditionals in your application.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-chart-line-up" aria-hidden="true"></i></div>
+            <h3>Usage ledger</h3>
+            <p>Feed it the usage counts your provider already returns and it normalizes them into hit ratios, read and
+              write token totals, and USD savings, computed strictly from pricing you supply. RACS never hardcodes a
+              provider price.</p>
+            <p class="benefit">One <code>stats()</code> call answers the question finance actually asks: what did
+              caching save this month, net of write premiums.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-fingerprint" aria-hidden="true"></i></div>
+            <h3>Drift detection</h3>
+            <p>Every plan fingerprints its stable segments. When the same agent lineage produces a different prefix
+              key, the drift report names exactly which segments changed and how many cached tokens died with the
+              change.</p>
+            <p class="benefit">A one-byte edit to a "stable" prompt is caught on the next plan, not three invoices
+              later.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-clock-clockwise" aria-hidden="true"></i></div>
+            <h3>Refresh scheduler</h3>
+            <p>Provider caches expire on a TTL; a touch shortly before expiry keeps them warm at read price instead of
+              paying the write premium again. <code>schedule()</code> computes the due moments at 90 percent of each
+              window; the host runs the timer and the call.</p>
+            <p class="benefit">Keep-warm stops being a hand-rolled heartbeat script and becomes a library primitive.
+            </p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-shield-check" aria-hidden="true"></i></div>
+            <h3>The invariant</h3>
+            <p>RACS never calls a provider API. It holds zero credentials, opens zero network connections, and never
+              sends a byte anywhere. Planning and accounting are synchronous and in-process; the host applies every
+              directive and makes every call itself.</p>
+            <p class="benefit">Nothing new to audit: no credential to store, no egress path to review, no vendor in
+              the request loop.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="providers">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow"><i class="ph-puzzle-piece" aria-hidden="true"></i>Provider matrix</span>
+          <h2>16 providers, 4 families, 1 table.</h2>
+          <p>Providers disagree on cache semantics: Anthropic wants explicit breakpoints, OpenAI caches automatically
+            behind routing keys with no write counter, Gemini sells the cache as a server-side resource with storage
+            economics. RACS models each provider as a thin profile over one of four adapter families, and every
+            profile value is overridable per engine instance.</p>
+        </div>
+        <div class="grid grid--2">
+          <div class="card">
+            <span class="fam-badge breakpoint">breakpoint</span>
+            <h3>Explicit breakpoints, write premiums</h3>
+            <p>The caller marks cache boundaries inside the request body, up to 4 per request, with 5m and 1h TTL
+              tiers. Writes cost 1.25x base input on the 5m tier and 2x on the 1h tier; cached reads cost 0.1x. Plans
+              place the breakpoints and prove they pay back.</p>
+          </div>
+          <div class="card">
+            <span class="fam-badge routing-key">routing-key</span>
+            <h3>Automatic caching, steered routing</h3>
+            <p>The provider caches server-side; the caller can only steer routing with a key so identical prefixes land
+              on the same cache. No write premium, reads around 0.25x, optional 24h retention. Plans emit the sticky
+              key and the layout that makes it hit.</p>
+          </div>
+          <div class="card">
+            <span class="fam-badge resource">resource</span>
+            <h3>Cache as a server resource</h3>
+            <p>The cache is created, refreshed, and deleted by the host, with caller-set TTL and per-token-hour storage
+              billing. Plans emit the full lifecycle: create, read, refresh, delete, plus the storage economics that
+              decide whether the resource is worth keeping.</p>
+          </div>
+          <div class="card">
+            <span class="fam-badge passive">passive</span>
+            <h3>No control surface, still optimizable</h3>
+            <p>The provider caches automatically and exposes no controls. RACS still orders segments stable-first,
+              lints the layout, and accounts usage, because on a left-anchored cache the ordering itself is the
+              optimization.</p>
+          </div>
+        </div>
+        <div class="providers">
+          <div class="provider-tile">
+            <span class="fam-badge breakpoint">breakpoint</span>
+            <span class="pid">anthropic</span>
+            <p>cache_control, 4 breakpoints, 5m and 1h TTLs, 0.1x reads</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge breakpoint">breakpoint</span>
+            <span class="pid">bedrock</span>
+            <p>cachePoint on the Converse API, Anthropic-equivalent semantics</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge breakpoint">breakpoint</span>
+            <span class="pid">hermes</span>
+            <p>Hermes Agent system_and_3 layout over cache_control semantics</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge breakpoint">breakpoint</span>
+            <span class="pid">microsoft-foundry</span>
+            <p>Claude on Microsoft Foundry honors cache_control unchanged</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge routing-key">routing-key</span>
+            <span class="pid">openai</span>
+            <p>prompt_cache_key, 128-token increments, optional 24h retention</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge routing-key">routing-key</span>
+            <span class="pid">xai</span>
+            <p>x-grok-conv-id and prompt_cache_key, reads around 0.16x</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge routing-key">routing-key</span>
+            <span class="pid">mistral</span>
+            <p>64-token cache blocks, prompt_cache_key routing, 0.1x reads</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge routing-key">routing-key</span>
+            <span class="pid">moonshot</span>
+            <p>Kimi platform caching through the OpenAI-compatible surface</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge routing-key">routing-key</span>
+            <span class="pid">openrouter</span>
+            <p>cache_control passthrough and cached_tokens across upstreams</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge resource">resource</span>
+            <span class="pid">google</span>
+            <p>cachedContents lifecycle, caller-set TTL, storage per token-hour</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge passive">passive</span>
+            <span class="pid">groq</span>
+            <p>automatic on gpt-oss models, entries expire after 2 hours idle</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge passive">passive</span>
+            <span class="pid">deepseek</span>
+            <p>disk-based context cache, hit and miss token reporting, 0.1x reads</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge passive">passive</span>
+            <span class="pid">ollama</span>
+            <p>local runtime KV reuse, analytics measure latency, not billing</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge passive">passive</span>
+            <span class="pid">lmstudio</span>
+            <p>local runtime KV reuse, same posture as ollama</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge passive">passive</span>
+            <span class="pid">huggingface</span>
+            <p>no public prefix-cache controls as of June 2026, ordering still plans</p>
+          </div>
+          <div class="provider-tile">
+            <span class="fam-badge passive">passive</span>
+            <span class="pid">custom</span>
+            <p>extensible: define your own profile via options.profiles, any family</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quickstart" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow"><i class="ph-download-simple" aria-hidden="true"></i>Quickstart</span>
+          <h2>Plan, apply, record, measure.</h2>
+        </div>
+
+        <h3 style="margin-top: 0;">1. Add the package</h3>
+        <div class="tablist" role="tablist" aria-label="Package manager">
+          <button class="tab" role="tab" aria-selected="true" aria-controls="pm-pnpm" id="tab-pnpm">pnpm</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="pm-npm" id="tab-npm">npm</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="pm-yarn" id="tab-yarn">yarn</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="pm-bun" id="tab-bun">bun</button>
+        </div>
+        <div id="pm-pnpm" role="tabpanel" class="tabpanel" data-active="true" aria-labelledby="tab-pnpm">
+          <div class="pre-wrap">
+            <button class="copy-btn" data-copy="pnpm add @takk/racs" aria-label="Copy pnpm command"><i class="ph-copy"
+                aria-hidden="true"></i><span>Copy</span></button>
+            <pre><code><span class="tk-keyword">pnpm</span> add @takk/racs</code></pre>
+          </div>
+        </div>
+        <div id="pm-npm" role="tabpanel" class="tabpanel" aria-labelledby="tab-npm">
+          <div class="pre-wrap">
+            <button class="copy-btn" data-copy="npm install @takk/racs" aria-label="Copy npm command"><i class="ph-copy"
+                aria-hidden="true"></i><span>Copy</span></button>
+            <pre><code><span class="tk-keyword">npm</span> install @takk/racs</code></pre>
+          </div>
+        </div>
+        <div id="pm-yarn" role="tabpanel" class="tabpanel" aria-labelledby="tab-yarn">
+          <div class="pre-wrap">
+            <button class="copy-btn" data-copy="yarn add @takk/racs" aria-label="Copy yarn command"><i class="ph-copy"
+                aria-hidden="true"></i><span>Copy</span></button>
+            <pre><code><span class="tk-keyword">yarn</span> add @takk/racs</code></pre>
+          </div>
+        </div>
+        <div id="pm-bun" role="tabpanel" class="tabpanel" aria-labelledby="tab-bun">
+          <div class="pre-wrap">
+            <button class="copy-btn" data-copy="bun add @takk/racs" aria-label="Copy bun command"><i class="ph-copy"
+                aria-hidden="true"></i><span>Copy</span></button>
+            <pre><code><span class="tk-keyword">bun</span> add @takk/racs</code></pre>
+          </div>
+        </div>
+        <p>Zero runtime dependencies. No peer dependencies. The tarball is 46 files; the core entry is 10.72 kB
+          brotli.</p>
+
+        <h3 style="margin-top: var(--space-5);">2. Plan the cache for one prompt</h3>
+        <div class="pre-wrap">
+          <button class="copy-btn" data-copy="import { createRACS } from '@takk/racs';
+
+const racs = createRACS({
+  pricing: {
+    // your prices, USD per million tokens; RACS never hardcodes them
+    'claude-sonnet-4-5': { inputPerMTok: 3, cacheReadPerMTok: 0.3, cacheWrite5mPerMTok: 3.75 },
+  },
+});
+
+const plan = racs.plan({
+  agentId: 'support-agent',
+  provider: 'anthropic',
+  model: 'claude-sonnet-4-5',
+  segments: [
+    { id: 'system', role: 'system', stability: 'stable', content: SYSTEM_PROMPT },
+    { id: 'tools', role: 'tools', stability: 'stable', content: TOOL_DEFINITIONS },
+    { id: 'turn', role: 'dynamic', stability: 'volatile', content: userMessage },
+  ],
+  reuse: { intervalSeconds: 45 },
+});
+
+plan.directives; // provider-faithful: cache_control breakpoints, in order
+plan.findings;   // lint findings; errors mean the layout defeats caching
+plan.breakEven;  // write premium vs read savings, stated in tokens" aria-label="Copy planning quickstart"><i
+              class="ph-copy" aria-hidden="true"></i><span>Copy</span></button>
+          <pre><code><span class="tk-keyword">import</span> { createRACS } <span class="tk-keyword">from</span> <span class="tk-string">'@takk/racs'</span>;
+
+<span class="tk-keyword">const</span> racs = <span class="tk-func">createRACS</span>({
+  pricing: {
+    <span class="tk-comment">// your prices, USD per million tokens; RACS never hardcodes them</span>
+    <span class="tk-string">'claude-sonnet-4-5'</span>: { inputPerMTok: <span class="tk-num">3</span>, cacheReadPerMTok: <span class="tk-num">0.3</span>, cacheWrite5mPerMTok: <span class="tk-num">3.75</span> },
+  },
+});
+
+<span class="tk-keyword">const</span> plan = racs.<span class="tk-func">plan</span>({
+  agentId: <span class="tk-string">'support-agent'</span>,
+  provider: <span class="tk-string">'anthropic'</span>,
+  model: <span class="tk-string">'claude-sonnet-4-5'</span>,
+  segments: [
+    { id: <span class="tk-string">'system'</span>, role: <span class="tk-string">'system'</span>, stability: <span class="tk-string">'stable'</span>, content: SYSTEM_PROMPT },
+    { id: <span class="tk-string">'tools'</span>, role: <span class="tk-string">'tools'</span>, stability: <span class="tk-string">'stable'</span>, content: TOOL_DEFINITIONS },
+    { id: <span class="tk-string">'turn'</span>, role: <span class="tk-string">'dynamic'</span>, stability: <span class="tk-string">'volatile'</span>, content: userMessage },
+  ],
+  reuse: { intervalSeconds: <span class="tk-num">45</span> },
+});
+
+plan.directives; <span class="tk-comment">// provider-faithful: cache_control breakpoints, in order</span>
+plan.findings;   <span class="tk-comment">// lint findings; errors mean the layout defeats caching</span>
+plan.breakEven;  <span class="tk-comment">// write premium vs read savings, stated in tokens</span></code></pre>
+        </div>
+
+        <h3 style="margin-top: var(--space-5);">3. Record usage, read the savings</h3>
+        <div class="pre-wrap">
+          <button class="copy-btn" data-copy="// after the provider call, report the counts the response already carries
+racs.record({
+  provider: 'anthropic',
+  model: 'claude-sonnet-4-5',
+  prefixKey: plan.prefixKey,
+  inputTokens: 5200,
+  cacheReadTokens: 4100,
+});
+
+racs.stats(); // hit ratio, read/write tokens, USD saved, net of premiums
+
+// keep-warm: entries come due at 90 percent of each TTL window
+for (const entry of racs.schedule()) {
+  // the host touches the cache (a cheap read), then reports it
+  racs.markRefreshed(entry.prefixKey);
+}" aria-label="Copy recording quickstart"><i class="ph-copy" aria-hidden="true"></i><span>Copy</span></button>
+          <pre><code><span class="tk-comment">// after the provider call, report the counts the response already carries</span>
+racs.<span class="tk-func">record</span>({
+  provider: <span class="tk-string">'anthropic'</span>,
+  model: <span class="tk-string">'claude-sonnet-4-5'</span>,
+  prefixKey: plan.prefixKey,
+  inputTokens: <span class="tk-num">5200</span>,
+  cacheReadTokens: <span class="tk-num">4100</span>,
+});
+
+racs.<span class="tk-func">stats</span>(); <span class="tk-comment">// hit ratio, read/write tokens, USD saved, net of premiums</span>
+
+<span class="tk-comment">// keep-warm: entries come due at 90 percent of each TTL window</span>
+<span class="tk-keyword">for</span> (<span class="tk-keyword">const</span> entry <span class="tk-keyword">of</span> racs.<span class="tk-func">schedule</span>()) {
+  <span class="tk-comment">// the host touches the cache (a cheap read), then reports it</span>
+  racs.<span class="tk-func">markRefreshed</span>(entry.prefixKey);
+}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="cli">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow"><i class="ph-terminal-window" aria-hidden="true"></i>CLI</span>
+          <h2>The proof runs in your terminal.</h2>
+          <p>The <code>racs</code> binary ships in the box: <code>help</code>, <code>version</code>,
+            <code>analyze</code> for CI gating, <code>simulate</code> for the deterministic demonstration below,
+            <code>inspect --watch</code> for live state, and <code>serve</code>, a hardened local HTTP bridge exposing
+            <code>/plan</code>, <code>/lint</code>, <code>/usage</code>, <code>/stats</code>, <code>/schedule</code>,
+            <code>/refreshed</code>, and <code>/invalidate</code> to non-JavaScript stacks.</p>
+        </div>
+        <div class="term">
+          <div class="pre-wrap">
+            <button class="copy-btn" data-copy="npx @takk/racs simulate --calls 400 --seed 7"
+              aria-label="Copy simulate command"><i class="ph-copy" aria-hidden="true"></i><span>Copy</span></button>
+            <pre><code><span class="tk-keyword">$</span> racs simulate --calls 400 --seed 7
+racs simulate: 400 calls, seed 7, interval 60s, provider anthropic
+structured lint: clean
+naive lint:
+LINT warning segment-order naive-turn Volatile segment 'naive-turn' precedes stable segment 'naive-tools'. Prefix caches are left-anchored, so every token after 'naive-turn' is unreachable for the cache. <span class="tk-comment">[...]</span>
+LINT warning timestamp-in-stable naive-system Segment 'naive-system' is declared stable but contains an ISO-8601 datetime (digest 9d6f8366), and the words 'today' or 'current time' near digits. <span class="tk-comment">[...]</span>
+drift naive: 217dbd595cc63a93 -&gt; 7dfee9d9ed5102b9, segments [naive-system], 3000 tokens invalidated (call 2)
+drift naive: 7dfee9d9ed5102b9 -&gt; 44338bff92d176f9, segments [naive-system], 3000 tokens invalidated (call 3)
+<span class="tk-comment">[... 400 lines hidden: 397 further drift reports (calls 4 through 400) and the progress lines at calls 100, 200, and 300 ...]</span>
+progress: 400/400 calls, structured hits 399, naive hits 0
+--- summary ---
+calls: 400
+structured: hit ratio 0.96, net savings 9.87 USD
+naive: hit ratio 0.00, write-premium loss 1.50 USD
+structured prompt saves $11.37 (88.1%) versus naive</code></pre>
+          </div>
+        </div>
+        <p style="font-size: var(--font-size-sm); color: var(--color-text-tertiary);">
+          Output of <code>racs simulate --calls 400 --seed 7</code> against the shipped demonstration pricing,
+          truncated for length. Same seed, same output, every time: the simulation is fully deterministic.
+        </p>
+      </div>
+    </section>
+
+    <section id="calculator" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow"><i class="ph-calculator" aria-hidden="true"></i>Savings calculator</span>
+          <h2>What would your stable prefix save?</h2>
+          <p>Measured agent workloads report 41 to 80 percent savings on input spend from prefix caching (arXiv
+            2601.06007, January 2026). Your number depends on three quantities you already know. Estimate it from the
+            provider multipliers.</p>
+        </div>
+        <div class="calc">
+          <form class="calc-panel" id="calc-form" novalidate>
+            <div class="calc-field">
+              <label for="calc-spend">Monthly input-token spend (USD)</label>
+              <input type="number" id="calc-spend" name="calc-spend" inputmode="decimal" min="0" step="50"
+                value="1000">
+              <span class="hint">Input tokens only; output spend is untouched by prefix caching.</span>
+            </div>
+            <div class="calc-field">
+              <label for="calc-prefix">Share of tokens in the stable prefix</label>
+              <div class="calc-slider">
+                <input type="range" id="calc-prefix" name="calc-prefix" min="0" max="90" step="5" value="60"
+                  aria-describedby="calc-prefix-value">
+                <output id="calc-prefix-value" for="calc-prefix">60%</output>
+              </div>
+              <span class="hint">System prompt, tool definitions, reference documents: the part that repeats verbatim
+                across calls.</span>
+            </div>
+            <div class="calc-field">
+              <label for="calc-hit">Expected cache hit ratio</label>
+              <div class="calc-slider">
+                <input type="range" id="calc-hit" name="calc-hit" min="0" max="100" step="5" value="70"
+                  aria-describedby="calc-hit-value">
+                <output id="calc-hit-value" for="calc-hit">70%</output>
+              </div>
+              <span class="hint">How often a call replays the prefix inside the TTL window. Dense agent loops run
+                high; sporadic traffic runs low.</span>
+            </div>
+            <div class="calc-field">
+              <label for="calc-family">Provider family</label>
+              <select id="calc-family" name="calc-family">
+                <option value="breakpoint" selected>breakpoint: 1.25x writes, 0.1x reads (anthropic, bedrock, hermes,
+                  microsoft-foundry)</option>
+                <option value="routing-key">routing-key: no write premium, 0.25x reads (openai, xai, mistral,
+                  moonshot, openrouter)</option>
+                <option value="resource">resource: 0.1x reads plus storage (google)</option>
+              </select>
+            </div>
+          </form>
+          <div class="calc-panel calc-result" role="status" aria-live="polite">
+            <p class="label">Estimated monthly savings</p>
+            <p class="calc-usd" id="calc-usd">$333.00</p>
+            <p class="calc-pct" id="calc-pct">33.3% of input spend</p>
+            <dl class="calc-breakdown">
+              <div>
+                <dt>Cache-read savings</dt>
+                <dd id="calc-reads">$378.00</dd>
+              </div>
+              <div>
+                <dt>Write premium paid on misses</dt>
+                <dd id="calc-writes">$45.00</dd>
+              </div>
+            </dl>
+            <p class="calc-note" id="calc-storage" hidden>Resource family: Google additionally bills
+              cachedContents storage per token-hour, not modeled here. Keep the TTL as short as your reuse interval
+              allows.</p>
+            <p class="calc-note" id="calc-trap" hidden>Negative estimate: at this hit ratio the write premium exceeds
+              the read savings. This exact situation is the write-premium-trap lint; raise the hit ratio or do not
+              cache.</p>
+            <p class="calc-caption">An estimate from the provider multipliers and your own numbers, nothing more.
+              Server-side truth comes from usage reports: record real calls with <code>record()</code> and read
+              <code>stats()</code>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="surfaces">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow"><i class="ph-cube" aria-hidden="true"></i>Surfaces</span>
+          <h2>Seven ways in, one engine underneath.</h2>
+          <p>Sizes are brotli-compressed, measured on the published build and enforced in CI by size-limit.</p>
+        </div>
+        <div class="grid grid--3">
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-package" aria-hidden="true"></i></div>
+            <h3>@takk/racs</h3>
+            <span class="size-pill">10.72 kB ESM / 10.86 kB CJS</span>
+            <p>The full engine: <code>plan</code>, <code>lint</code>, <code>record</code>, <code>stats</code>,
+              <code>schedule</code>, <code>markRefreshed</code>, <code>drifts</code>, <code>invalidate</code>,
+              <code>profileOf</code>, <code>on</code>, <code>flush</code>, <code>close</code>, plus the memory, file,
+              and KV-style state backends.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-radio" aria-hidden="true"></i></div>
+            <h3>@takk/racs/otel</h3>
+            <span class="size-pill">604 B</span>
+            <p>GenAI span ingestion: maps OpenTelemetry GenAI semantic-convention spans into normalized usage records,
+              so traces you already collect feed the ledger without new instrumentation.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-lightning" aria-hidden="true"></i></div>
+            <h3>@takk/racs/vercel</h3>
+            <span class="size-pill">1.15 kB</span>
+            <p>Middleware for the Vercel AI SDK: applies plan directives through <code>providerOptions</code> and
+              records usage from results, streaming included via <code>wrapStream</code>.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-plugs" aria-hidden="true"></i></div>
+            <h3>@takk/racs/integrations</h3>
+            <span class="size-pill">666 B</span>
+            <p>Bridges to the four sibling packages: freeze parameter tuning while the prefix drifts and release after
+              3 stable plans, observe the cache behaviorally, plan per routed model, invalidate on credential
+              rotation.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-globe" aria-hidden="true"></i></div>
+            <h3>@takk/racs/web</h3>
+            <span class="size-pill">10.23 kB</span>
+            <p>The same engine without the Node file backend, so browser bundles never advertise a backend they cannot
+              run. Pair with <code>kvState</code> for persistence.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-cloud" aria-hidden="true"></i></div>
+            <h3>@takk/racs/edge</h3>
+            <span class="size-pill">10.23 kB</span>
+            <p>Edge-runtime entry with the identical surface. <code>kvState</code> wraps any Redis, Upstash, or
+              Cloudflare KV style client in one line for cross-isolate state.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-terminal-window" aria-hidden="true"></i></div>
+            <h3>CLI: racs</h3>
+            <span class="size-pill">help / analyze / simulate / inspect / serve</span>
+            <p><code>analyze</code> gates prompt changes in CI, <code>inspect --watch</code> redraws live state, and
+              <code>serve</code> is a hardened, token-authenticated HTTP bridge for non-JavaScript stacks.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-gear" aria-hidden="true"></i></div>
+            <h3>Engine internals</h3>
+            <span class="size-pill">exported, not hidden</span>
+            <p><code>Planner</code>, <code>PrefixAnalyzer</code>, <code>Ledger</code>, <code>PROVIDER_PROFILES</code>,
+              <code>fnv1a64</code>, and <code>estimateTokens</code> are all public exports; build your own pipeline
+              from the same parts the engine uses.</p>
+          </article>
+          <article class="card">
+            <div class="icon-wrap"><i class="ph-broadcast" aria-hidden="true"></i></div>
+            <h3>Telemetry</h3>
+            <span class="size-pill">6 typed events</span>
+            <p><code>plan.created</code>, <code>prefix.drifted</code>, <code>usage.recorded</code>,
+              <code>refresh.due</code>, <code>resource.action</code>, <code>limit.reached</code>: synchronous,
+              deterministic under an injected clock, and free of any telemetry vendor.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="family" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow"><i class="ph-squares-four" aria-hidden="true"></i>Family stack</span>
+          <h2>Five packages, one operational layer for agents.</h2>
+          <p>Each package stands alone with zero runtime dependencies; together they cover credentials, routing,
+            behavior, tuning, and caching. The <code>/integrations</code> entry bridges them in one line each.</p>
+        </div>
+        <div class="stack">
+          <div class="stack-item">
+            <span class="pkg">@takk/keymesh</span>
+            <p>Credential rotation, failover, and circuit breaking for provider API keys; RACS invalidates cached
+              resources when a key rotates, via <code>keymeshBridge</code>.</p>
+            <a class="repo" href="https://github.com/davccavalcante/keymesh" rel="noopener external"><i
+                class="ph-github-logo" aria-hidden="true"></i>davccavalcante/keymesh</a>
+          </div>
+          <div class="stack-item">
+            <span class="pkg">@takk/modelchain</span>
+            <p>Model routing and fallback chains across providers; <code>modelchainBridge</code> plans a cache layout
+              for whichever model the chain routes to.</p>
+            <a class="repo" href="https://github.com/davccavalcante/modelchain" rel="noopener external"><i
+                class="ph-github-logo" aria-hidden="true"></i>davccavalcante/modelchain</a>
+          </div>
+          <div class="stack-item">
+            <span class="pkg">@takk/behavioralai</span>
+            <p>Behavioral observation for agent systems; <code>behavioralaiBridge</code> turns the cache into a
+              behaviorally observed surface, hit and drift patterns included.</p>
+            <a class="repo" href="https://github.com/davccavalcante/behavioralai" rel="noopener external"><i
+                class="ph-github-logo" aria-hidden="true"></i>davccavalcante/behavioralai</a>
+          </div>
+          <div class="stack-item">
+            <span class="pkg">@takk/noeticos</span>
+            <p>Adaptive runtime parameter tuning with canary rollouts and rollback; <code>noeticosBridge</code>
+              freezes tuning while the prefix drifts and releases it after 3 stable plans.</p>
+            <a class="repo" href="https://github.com/davccavalcante/noeticos" rel="noopener external"><i
+                class="ph-github-logo" aria-hidden="true"></i>davccavalcante/noeticos</a>
+          </div>
+          <div class="stack-item">
+            <span class="pkg">@takk/racs</span>
+            <span class="badge this-pkg"><i class="ph-check" aria-hidden="true"></i>this package</span>
+            <p>Prefix-cache management: stability linting, provider-faithful directives, drift detection, keep-warm
+              scheduling, savings analytics.</p>
+            <a class="repo" href="https://github.com/davccavalcante/racs" rel="noopener external"><i
+                class="ph-github-logo" aria-hidden="true"></i>davccavalcante/racs</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow"><i class="ph-question" aria-hidden="true"></i>FAQ</span>
+          <h2>Common questions.</h2>
+        </div>
+        <div class="faq">
+          <details open>
+            <summary><span>Is RACS production-ready at 1.0.0?</span><i class="ph-plus" aria-hidden="true"></i><i
+                class="ph-minus" aria-hidden="true"></i></summary>
+            <p>Yes. 187 tests across 13 suites pass on Node 22 and Node 24, with coverage at 92.46 percent statements,
+              82.09 percent branches, 93.33 percent functions, and 92.49 percent lines. TypeScript strict mode, lint,
+              and package checks are clean, and every release ships with SLSA provenance.</p>
+          </details>
+          <details>
+            <summary><span>Does RACS ever call my provider's API?</span><i class="ph-plus" aria-hidden="true"></i><i
+                class="ph-minus" aria-hidden="true"></i></summary>
+            <p>Never. RACS plans directives, lints layouts, schedules refreshes, and accounts usage entirely
+              in-process. It holds zero credentials and opens zero network connections; the host application stays in
+              control of every provider call and applies the directives itself.</p>
+          </details>
+          <details>
+            <summary><span>How is RACS different from a gateway or proxy?</span><i class="ph-plus"
+                aria-hidden="true"></i><i class="ph-minus" aria-hidden="true"></i></summary>
+            <p>A gateway sits on the wire and forwards traffic. RACS is a planning engine: it computes the cache
+              directives your existing client applies on its own requests. As of June 2026 we found no shipping npm
+              package that combines stability linting, multi-provider directive planning, drift detection,
+              persistence, and savings analytics in one library.</p>
+          </details>
+          <details>
+            <summary><span>Which providers does RACS support?</span><i class="ph-plus" aria-hidden="true"></i><i
+                class="ph-minus" aria-hidden="true"></i></summary>
+            <p>16 profiles over 4 adapter families. Breakpoint: anthropic, bedrock, hermes, microsoft-foundry.
+              Routing-key: openai, xai, mistral, moonshot, openrouter. Resource: google. Passive: groq, deepseek,
+              ollama, lmstudio, huggingface, custom. Every profile value is overridable per engine instance, so a
+              provider changing terms is a configuration edit, not a release.</p>
+          </details>
+          <details>
+            <summary><span>How much can prefix caching actually save?</span><i class="ph-plus"
+                aria-hidden="true"></i><i class="ph-minus" aria-hidden="true"></i></summary>
+            <p>Measured agent workloads report 41 to 80 percent savings on input spend (arXiv 2601.06007, January
+              2026). Your number depends on prefix share, hit ratio, and the provider multipliers; the calculator on
+              this page estimates it from your own figures, and the ledger reports the measured truth once you record
+              real usage.</p>
+          </details>
+          <details>
+            <summary><span>What do the nine lint codes catch?</span><i class="ph-plus" aria-hidden="true"></i><i
+                class="ph-minus" aria-hidden="true"></i></summary>
+            <p>The documented production cache-killers: timestamps and identifiers inside segments declared stable,
+              volatile content placed early in the prompt, unstable tool definitions, prefixes below the provider
+              minimum, breakpoints placed after volatile segments, write-premium traps, wrong segment ordering, and
+              missing stability declarations.</p>
+          </details>
+          <details>
+            <summary><span>Does RACS see my prompt content?</span><i class="ph-plus" aria-hidden="true"></i><i
+                class="ph-minus" aria-hidden="true"></i></summary>
+            <p>Only if you pass it. Every segment accepts a contentHash instead of content. In hash-only mode RACS
+              never sees the text, and plans, drift reports, persisted snapshots, and telemetry carry hashes and token
+              counts only.</p>
+          </details>
+          <details>
+            <summary><span>How does drift detection work?</span><i class="ph-plus" aria-hidden="true"></i><i
+                class="ph-minus" aria-hidden="true"></i></summary>
+            <p>Every plan fingerprints its stable segments with deterministic FNV-1a 64 hashing. When a later plan for
+              the same agent lineage produces a different prefix key, RACS emits a drift report naming exactly which
+              segments changed and how many cached tokens were invalidated.</p>
+          </details>
+          <details>
+            <summary><span>Where does state live, and can it persist?</span><i class="ph-plus"
+                aria-hidden="true"></i><i class="ph-minus" aria-hidden="true"></i></summary>
+            <p>In memory by default. The file backend persists snapshots on Node, and kvState wraps any Redis,
+              Upstash, or Cloudflare KV style client in one line. Persistence is optional; the engine is fully
+              functional without it.</p>
+          </details>
+          <details>
+            <summary><span>How are USD savings calculated?</span><i class="ph-plus" aria-hidden="true"></i><i
+                class="ph-minus" aria-hidden="true"></i></summary>
+            <p>From pricing you supply. RACS never hardcodes provider prices: you pass a table in USD per million
+              tokens, and the ledger combines it with normalized usage reports into hit ratios, savings, and net
+              effect after write premiums. Without a pricing table, every statistic is still reported in tokens.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="author" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow"><i class="ph-user-circle" aria-hidden="true"></i>Author</span>
+          <h2>Built and maintained by David C Cavalcante.</h2>
+        </div>
+        <div class="author-card">
+          <div>
+            <p class="author-name">David C Cavalcante</p>
+            <p class="author-role">Founder, Takk Innovate Studio</p>
+            <p>Builder of the @takk family of NPM packages: zero-dependency operational infrastructure for Massive
+              Intelligence (IM) agent systems.</p>
+            <ul class="author-links">
+              <li><a href="https://github.com/davccavalcante" rel="noopener external"><i class="ph-github-logo"
+                    aria-hidden="true"></i>github.com/davccavalcante</a></li>
+              <li><a href="https://linkedin.com/in/hellodav" rel="noopener external"><i class="ph-linkedin-logo"
+                    aria-hidden="true"></i>linkedin.com/in/hellodav</a></li>
+              <li><a href="https://x.com/davccavalcante" rel="noopener external"><svg class="x-icon" viewBox="0 0 24 24"
+                    fill="currentColor" aria-hidden="true">
+                    <path
+                      d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>x.com/davccavalcante</a></li>
+              <li><a href="https://takk.ag" rel="noopener external"><i class="ph-globe"
+                    aria-hidden="true"></i>takk.ag</a></li>
+              <li><a href="mailto:davcavalcante@proton.me"><i class="ph-envelope"
+                    aria-hidden="true"></i>davcavalcante@proton.me</a></li>
+            </ul>
+          </div>
+          <div>
+            <p>RACS exists because the cheapest tokens are the ones the provider already has. The Hermes Agent
+              ecosystem alone carries multiple open issues asking for stability linting, drift detection, and cache
+              accounting; this package answers them as a library any host can embed.</p>
+            <p>If RACS catches a cache-buster the test suite missed, the most useful thing you can do is open a GitHub
+              issue with the lint finding attached. The release runbook, the threat model, and the contributor
+              agreement live in the repository.</p>
+            <div class="hero-cta" style="margin-top: var(--space-4);">
+              <a class="btn" href="https://github.com/davccavalcante/racs" rel="noopener external"><i
+                  class="ph-book-open" aria-hidden="true"></i><span>Read the source</span></a>
+              <a class="btn btn--secondary" href="https://www.npmjs.com/package/@takk/racs" rel="noopener external"><i
+                  class="ph-package" aria-hidden="true"></i><span>Get on npm</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="brand-block">
+          <a href="#top" class="brand">
+            <span class="mark" aria-hidden="true">r</span>
+            <span>RACS</span>
+          </a>
+          <p>Remote Agent Context Store. Provider-faithful prefix-cache management for IM agents, with zero runtime
+            dependencies and zero provider calls.</p>
+        </div>
+        <div>
+          <h3>Package</h3>
+          <ul>
+            <li><a href="https://www.npmjs.com/package/@takk/racs" rel="noopener external"><i class="ph-package"
+                  aria-hidden="true"></i>npm</a></li>
+            <li><a href="https://github.com/davccavalcante/racs" rel="noopener external"><i class="ph-github-logo"
+                  aria-hidden="true"></i>GitHub</a></li>
+            <li><a href="https://github.com/davccavalcante/racs/releases" rel="noopener external"><i class="ph-tag"
+                  aria-hidden="true"></i>Releases</a></li>
+            <li><a href="https://github.com/davccavalcante/racs/issues" rel="noopener external"><i class="ph-bug"
+                  aria-hidden="true"></i>Issues</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Documentation</h3>
+          <ul>
+            <li><a href="https://github.com/davccavalcante/racs/blob/main/README.md" rel="noopener external"><i
+                  class="ph-file-text" aria-hidden="true"></i>README</a></li>
+            <li><a href="https://github.com/davccavalcante/racs/blob/main/SPEC.md" rel="noopener external"><i
+                  class="ph-file-text" aria-hidden="true"></i>SPEC</a></li>
+            <li><a href="https://github.com/davccavalcante/racs/blob/main/SECURITY.md" rel="noopener external"><i
+                  class="ph-shield" aria-hidden="true"></i>SECURITY</a></li>
+            <li><a href="https://github.com/davccavalcante/racs/blob/main/PRIVACY.md" rel="noopener external"><i
+                  class="ph-eye-slash" aria-hidden="true"></i>PRIVACY</a></li>
+            <li><a href="https://github.com/davccavalcante/racs/tree/main/examples" rel="noopener external"><i
+                  class="ph-folder-open" aria-hidden="true"></i>Examples</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Author</h3>
+          <ul>
+            <li><a href="https://github.com/davccavalcante" rel="noopener external"><i class="ph-github-logo"
+                  aria-hidden="true"></i>GitHub</a></li>
+            <li><a href="https://linkedin.com/in/hellodav" rel="noopener external"><i class="ph-linkedin-logo"
+                  aria-hidden="true"></i>LinkedIn</a></li>
+            <li><a href="https://x.com/davccavalcante" rel="noopener external"><svg class="x-icon" viewBox="0 0 24 24"
+                  fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>davccavalcante</a></li>
+            <li><a href="https://takk.ag" rel="noopener external"><i class="ph-globe" aria-hidden="true"></i>takk.ag</a>
+            </li>
+            <li><a href="mailto:davcavalcante@proton.me"><i class="ph-envelope" aria-hidden="true"></i>Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="bottom-bar">
+        <p class="legal">Copyright 2026 David C Cavalcante. Apache License, Version 2.0. See <a
+            href="https://github.com/davccavalcante/racs/blob/main/NOTICE" rel="noopener external">NOTICE</a> for
+          attribution and third-party licenses.</p>
+        <a class="by-takk" href="https://takk.ag" rel="noopener external" aria-label="Built at Takk Innovate Studio">
+          <img src="assets/takk.png" width="28" height="28" alt="Takk Innovate Studio" loading="lazy" decoding="async">
+          <span>Built at Takk Innovate Studio</span>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/phosphor-icons@1.4.2/src/index.min.js" defer></script>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var stored = null;
+      try {stored = localStorage.getItem('racs-theme');} catch (_) { }
+      if (stored === 'light' || stored === 'dark') {root.setAttribute('data-theme', stored);}
+      var btn = document.getElementById('theme-toggle');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          var current = root.getAttribute('data-theme');
+          var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var next;
+          if (!current) {next = systemDark ? 'light' : 'dark';}
+          else {next = current === 'dark' ? 'light' : 'dark';}
+          root.setAttribute('data-theme', next);
+          try {localStorage.setItem('racs-theme', next);} catch (_) { }
+        });
+      }
+    }());
+
+    document.querySelectorAll('.copy-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var text = btn.getAttribute('data-copy') || '';
+        var label = btn.querySelector('span');
+        var orig = label ? label.textContent : 'Copy';
+        var done = function () {
+          if (label) label.textContent = 'Copied';
+          btn.classList.add('copied');
+          setTimeout(function () {
+            if (label) label.textContent = orig;
+            btn.classList.remove('copied');
+          }, 1400);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, done);
+        } else {
+          try {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            done();
+          } catch (_) {done();}
+        }
+      });
+    });
+
+    document.querySelectorAll('[role="tablist"]').forEach(function (list) {
+      var tabs = list.querySelectorAll('[role="tab"]');
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          tabs.forEach(function (t) {t.setAttribute('aria-selected', 'false');});
+          tab.setAttribute('aria-selected', 'true');
+          var targetId = tab.getAttribute('aria-controls');
+          var siblings = document.querySelectorAll('.tabpanel[data-active="true"]');
+          siblings.forEach(function (panel) {
+            if (panel.getAttribute('aria-labelledby') &&
+              Array.from(tabs).some(function (t) {return t.id === panel.getAttribute('aria-labelledby');})) {
+              panel.setAttribute('data-active', 'false');
+            }
+          });
+          var target = document.getElementById(targetId);
+          if (target) target.setAttribute('data-active', 'true');
+        });
+      });
+    });
+
+    /* RACS_CALC_BEGIN */
+    /*
+     * Savings model, documented for review.
+     *
+     *   S = monthly input-token spend in USD (user input, spendUsd)
+     *   p = share of input tokens inside the stable prefix, fraction in [0, 0.9]
+     *   h = expected cache hit ratio over prefix tokens, fraction in [0, 1]
+     *
+     * Family multipliers, from the shipped provider profiles:
+     *   r = cached-read price as a multiple of base input price
+     *   w = cache-write price as a multiple of base input price (1 means no premium)
+     *
+     *   breakpoint:  r = 0.1,  w = 1.25  (anthropic, bedrock, hermes, microsoft-foundry, 5m tier)
+     *   routing-key: r = 0.25, w = 1     (openai, xai, mistral, moonshot, openrouter)
+     *   resource:    r = 0.1,  w = 1     (google; per-token-hour storage billed separately, noted not modeled)
+     *
+     * Of the monthly spend, S*p is attributable to prefix tokens at base price.
+     * The fraction h of that traffic is served as cache reads at multiplier r:
+     *   readSavingsUsd  = S * p * h * (1 - r)
+     * Every miss (fraction 1-h) rewrites the prefix and pays the write premium over base:
+     *   writePremiumUsd = S * p * (1 - h) * (w - 1)
+     * Net estimate:
+     *   savingsUsd = S*p*h*(1-r) - S*p*(1-h)*(w-1)
+     *   savingsPct = savingsUsd / S * 100
+     *
+     * Worked example: S=1000, p=0.6, h=0.7, breakpoint:
+     *   reads 1000*0.6*0.7*0.9 = 378, premium 1000*0.6*0.3*0.25 = 45, net 333 USD (33.3%).
+     */
+    function racsSavings(spendUsd, prefixShare, hitRatio, family) {
+      var FAMILIES = {
+        'breakpoint': {read: 0.1, write: 1.25},
+        'routing-key': {read: 0.25, write: 1},
+        'resource': {read: 0.1, write: 1}
+      };
+      var f = FAMILIES[family] || FAMILIES['breakpoint'];
+      var readSavingsUsd = spendUsd * prefixShare * hitRatio * (1 - f.read);
+      var writePremiumUsd = spendUsd * prefixShare * (1 - hitRatio) * (f.write - 1);
+      var savingsUsd = readSavingsUsd - writePremiumUsd;
+      var savingsPct = spendUsd > 0 ? (savingsUsd / spendUsd) * 100 : 0;
+      return {
+        savingsUsd: savingsUsd,
+        savingsPct: savingsPct,
+        readSavingsUsd: readSavingsUsd,
+        writePremiumUsd: writePremiumUsd
+      };
+    }
+    /* RACS_CALC_END */
+
+    (function () {
+      var spendEl = document.getElementById('calc-spend');
+      var prefixEl = document.getElementById('calc-prefix');
+      var hitEl = document.getElementById('calc-hit');
+      var familyEl = document.getElementById('calc-family');
+      var prefixOut = document.getElementById('calc-prefix-value');
+      var hitOut = document.getElementById('calc-hit-value');
+      var usdEl = document.getElementById('calc-usd');
+      var pctEl = document.getElementById('calc-pct');
+      var readsEl = document.getElementById('calc-reads');
+      var writesEl = document.getElementById('calc-writes');
+      var storageEl = document.getElementById('calc-storage');
+      var trapEl = document.getElementById('calc-trap');
+      var form = document.getElementById('calc-form');
+      if (!spendEl || !prefixEl || !hitEl || !familyEl) {return;}
+
+      function usd(value) {
+        var sign = value < 0 ? '-' : '';
+        return sign + '$' + Math.abs(value).toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function update() {
+        var spend = Math.max(0, parseFloat(spendEl.value) || 0);
+        var prefixShare = (parseInt(prefixEl.value, 10) || 0) / 100;
+        var hitRatio = (parseInt(hitEl.value, 10) || 0) / 100;
+        var family = familyEl.value;
+        var result = racsSavings(spend, prefixShare, hitRatio, family);
+
+        prefixOut.textContent = Math.round(prefixShare * 100) + '%';
+        hitOut.textContent = Math.round(hitRatio * 100) + '%';
+        usdEl.textContent = usd(result.savingsUsd);
+        usdEl.classList.toggle('negative', result.savingsUsd < 0);
+        pctEl.textContent = result.savingsPct.toFixed(1) + '% of input spend';
+        readsEl.textContent = usd(result.readSavingsUsd);
+        writesEl.textContent = usd(result.writePremiumUsd);
+        storageEl.hidden = family !== 'resource';
+        trapEl.hidden = result.savingsUsd >= 0;
+      }
+
+      if (form) {form.addEventListener('submit', function (e) {e.preventDefault();});}
+      [spendEl, prefixEl, hitEl, familyEl].forEach(function (el) {
+        el.addEventListener('input', update);
+        el.addEventListener('change', update);
+      });
+      update();
+    }());
+  </script>
+</body>
+
+</html>

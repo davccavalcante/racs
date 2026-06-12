@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://racs.takk.ag/sitemap.xml

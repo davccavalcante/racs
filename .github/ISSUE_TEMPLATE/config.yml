@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "Security vulnerability"
+    url: "mailto:davcavalcante@proton.me?subject=%5BSECURITY%5D%20"
+    about: "Do NOT open a public issue for security vulnerabilities. Email davcavalcante@proton.me with prefix [SECURITY]. We coordinate fix and disclosure privately."
+  - name: "General discussion / questions"
+    url: "https://github.com/davccavalcante/racs/discussions"
+    about: "For design conversations, usage questions, or anything that is not a bug report or feature request, use GitHub Discussions."
+  - name: "Read the spec first"
+    url: "https://github.com/davccavalcante/racs/blob/main/SPEC.md"
+    about: "Before opening an issue about behavior, read SPEC.md, the binding contract for the planning semantics, the lint heuristics, the break-even math, and the SemVer policy."

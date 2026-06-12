@@ -1,0 +1,40 @@
+@takk/racs
+Copyright 2026 David C Cavalcante / Takk Innovate Studio
+
+This product includes software developed by David C Cavalcante
+(https://takk.ag - davcavalcante@proton.me / say@takk.ag).
+
+RACS (Remote Agent Context Store) is a universal, zero-runtime-dependency
+library and CLI for provider-faithful prefix-cache management: stability
+linting, multi-provider directive planning, deterministic prefix keys,
+TTL keep-warm scheduling, drift detection, persistence, and hit-ratio and
+savings analytics. It never calls a provider API.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use the software in this repository except in compliance with the License.
+A copy of the License is in the LICENSE file at the root of this repository,
+and is also available at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+----------------------------------------------------------------------------
+THIRD-PARTY COMPONENTS
+----------------------------------------------------------------------------
+
+RACS has ZERO runtime dependencies. The published package contains no
+third-party code. The @takk sibling packages (@takk/noeticos,
+@takk/behavioralai, @takk/modelchain, @takk/keymesh) are OPTIONAL peer
+dependencies bridged through local structural interfaces; none of them is
+imported at runtime, and each is distributed under its own license by the
+same author.
+
+Development-only tooling (NOT shipped in the published package):
+
+  - tsup                     - MIT
+  - vitest                   - MIT
+  - typescript               - Apache-2.0
+  - @biomejs/biome           - MIT OR Apache-2.0
+  - publint                  - MIT
+  - @arethetypeswrong/cli    - MIT
+  - size-limit               - MIT
+  - tsx                      - MIT

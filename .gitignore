@@ -1,0 +1,41 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# node
+node_modules/
+.pnpm-store/
+
+# build artifacts
+dist/
+build/
+*.tsbuildinfo
+
+# npm pack output
+*.tgz
+
+# tests
+coverage/
+.vitest/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# misc
+.cache/
+.turbo/
+.tmp/
+
+# private project planning (intentionally not published)
+TASK.md
