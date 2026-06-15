@@ -171,7 +171,7 @@
   "sideEffects": false,
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.3",
-    "@biomejs/biome": "^2.4.16",
+    "@biomejs/biome": "^2.5.0",
     "@size-limit/preset-small-lib": "^12.1.0",
     "@takk/behavioralai": "^1.0.0",
     "@takk/keymesh": "^1.0.0",
