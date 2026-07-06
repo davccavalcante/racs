@@ -170,20 +170,20 @@
   "packageManager": "pnpm@10.34.1",
   "sideEffects": false,
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.18.3",
-    "@biomejs/biome": "^2.4.16",
+    "@arethetypeswrong/cli": "^0.18.4",
+    "@biomejs/biome": "^2.5.2",
     "@size-limit/preset-small-lib": "^12.1.0",
     "@takk/behavioralai": "^1.0.0",
     "@takk/keymesh": "^1.0.0",
     "@takk/modelchain": "^1.0.0",
     "@takk/noeticos": "^1.0.0",
-    "@types/node": "^25.9.3",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@types/node": "^25.9.4",
+    "@vitest/coverage-v8": "^4.1.10",
     "publint": "^0.3.21",
     "size-limit": "^12.1.0",
     "tsup": "^8.5.1",
-    "tsx": "^4.22.4",
+    "tsx": "^4.23.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.10"
   }
 }
